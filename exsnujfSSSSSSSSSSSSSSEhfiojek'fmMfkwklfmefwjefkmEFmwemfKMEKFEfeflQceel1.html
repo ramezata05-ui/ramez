@@ -1,77 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>My Excel Table</title>
+    <title>جدول الأصناف</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background-color: #fafafa;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #searchBox {
+            width: 300px;
+            padding: 8px;
+            margin: 10px 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        #searchBtn {
+            padding: 8px 16px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        #searchBtn:hover {
+            background-color: #005fa3;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr.hide {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>My Excel Data</h1>
 
-    <table>
-        <tr><th>Name</th><th>Email</th></tr>
-    
-              <table>
-    <tr>
-        <td>رقم الصنف</td>
-        <td>اسم الصنف</td>
-        <td>اخر سعر شراء</td>
-    </tr>
-    <tr>
-        <td>I00000001</td>
-        <td>غسالة ال جي 10.5 كيلو سلفر LG V3</td>
-        <td>2,520.00</td>
-    </tr>
-    <tr>
-        <td>I00000002</td>
-        <td>غسالة ال جي 9 كيلو V4</td>
-        <td>2,230.00</td>
-    </tr>
-    <tr>
-        <td>I00000003</td>
-        <td>غسالة هير 10 كيلو سلفر دايركت موشن HW100-B14636NS3</td>
-        <td>1,900.00</td>
-    </tr>
-    <tr>
-        <td>I00000004</td>
-        <td>غسالة هير 10 كيلو دايركت درايف HW120</td>
-        <td>2,100.00</td>
-    </tr>
-    <tr>
-        <td>I00000005</td>
-        <td>غسالة جينرال لوكس 5 كيلو اسود GLX-682B</td>
-        <td>840.00</td>
-    </tr>
-    <tr>
-        <td>I00000006</td>
-        <td>غسالة منجر هوم 9 كيلو سلفر</td>
-        <td>1,250.00</td>
-    </tr>
-    <tr>
-        <td>I00000007</td>
-        <td>فريزر برستيج اسود هواء 6 جوارير PR241</td>
-        <td>1,300.00</td>
-    </tr>
-    <tr>
-        <td>I00000008</td>
-        <td>فريزر كونيكا 6 جوارير ثلج سلفر</td>
-        <td>900.00</td>
-    </tr>
-    <tr>
-        <td>I00000009</td>
-        <td>جلاية منجر هوم سلفر 3 رفوف </td>
-        <td>1,200.00</td>
-    </tr>
-    <tr>
-        <td>I00000010</td>
-        <td>جلاية بيكو 5 برامج سلفر 2 رف</td>
-        <td>1,320.00</td>
-    </tr>
+    <h1>جدول الأصناف</h1>
+
+    <div style="text-align:center;">
+        <input type="text" id="searchBox" placeholder="ابحث عن صنف أو رقم أو سعر...">
+        <button id="searchBtn">بحث</button>
+    </div>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>رقم الصنف</th>
+                <th>اسم الصنف</th>
+                <th>آخر سعر شراء</th>
+            </tr>
+        </thead>
+        <tbody>
+------------------------------
+        </tbody>
+    </table>
+
+    <script>
+        const searchBtn = document.getElementById('searchBtn');
+        const searchBox = document.getElementById('searchBox');
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+
+        function searchTable() {
+            const query = searchBox.value.trim().toLowerCase();
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.classList.toggle('hide', !text.includes(query));
+            });
+        }
+
+        searchBtn.addEventListener('click', searchTable);
+        searchBox.addEventListener('keyup', searchTable);
+    </script>
+
+</body>
+</html>
     <tr>
         <td>I00000011</td>
         <td>جلاية بيكو 6 برامج BDFN26533XQ</td>
@@ -5397,7 +5417,26 @@
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>
-</table>
+        </tbody>
     </table>
+
+    <script>
+        const searchBtn = document.getElementById('searchBtn');
+        const searchBox = document.getElementById('searchBox');
+        const rows = document.querySelectorAll('#dataTable tbody tr');
+
+        function searchTable() {
+            const query = searchBox.value.trim().toLowerCase();
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.classList.toggle('hide', !text.includes(query));
+            });
+        }
+
+        searchBtn.addEventListener('click', searchTable);
+        searchBox.addEventListener('keyup', searchTable);
+    </script>
+
 </body>
 </html>
+
