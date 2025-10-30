@@ -1,55 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>كشف أسعار لمعرض أبو رامز</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
-</head>
-<body>
-    <h1>كشف أسعار لمعرض أبو رامز</h1>
-<!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>إبحث وشوف الي بدك اياه</title>
+  <title>كشف أسعار لمعرض أبو رامز</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 40px;
+      padding: 20px;
     }
+
+    h1 {
+      text-align: center;
+    }
+
     .search-box {
       margin-bottom: 20px;
+      text-align: center;
     }
+
     input[type="text"] {
       padding: 8px;
       width: 250px;
       font-size: 16px;
     }
+
     button {
       padding: 8px 12px;
       font-size: 16px;
       cursor: pointer;
     }
+
     mark {
       background-color: yellow;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
 <body>
+
+  <h1>كشف أسعار لمعرض أبو رامز</h1>
 
   <div class="search-box">
     <input type="text" id="searchInput" placeholder="اكتب اسم الصنف الي بتبحث عنه">
     <button onclick="searchText()">بحث</button>
   </div>
 
-  <div id="content"> مش تسوي اشي مش معلمك عليه ، انتبه منيح ودير بالك تغلط حبيبي 
+  <div id="content">
+    مش تسوي اشي مش معلمك عليه ، انتبه منيح ودير بالك تغلط حبيبي 
     <p>مع تحيات ، المبرمج رامز عطاطرة 🔥</p>
+
+    <table>
+      <tr><th>المنتج</th><th>السعر</th></tr>
+      <tr><td>ثلاجة</td><td>1200</td></tr>
+      <tr><td>غسالة</td><td>950</td></tr>
+      <tr><td>فرن</td><td>700</td></tr>
+      <tr><td>مروحة</td><td>250</td></tr>
+    </table>
   </div>
 
   <script>
@@ -58,12 +81,12 @@
       const content = document.getElementById("content");
       const text = content.innerHTML;
 
-      // Remove old highlights
+      // إزالة أي تظليل قديم
       content.innerHTML = text.replace(/<mark>|<\/mark>/g, "");
 
       if (input === "") return;
 
-      // Highlight the searched word (case-insensitive)
+      // تظليل الكلمة المطلوبة (بدون حساسية للحروف)
       const regex = new RegExp(`(${input})`, "gi");
       content.innerHTML = content.innerHTML.replace(regex, "<mark>$1</mark>");
     }
@@ -71,7 +94,6 @@
 
 </body>
 </html>
-
 
     <table>
         <tr><th>الاسم والرقم</th><th>وسعر آخر شراء</th></tr>
@@ -5462,5 +5484,6 @@
 </body>
 
 </html>
+
 
 
