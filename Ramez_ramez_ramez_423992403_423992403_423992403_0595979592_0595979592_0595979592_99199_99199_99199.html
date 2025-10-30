@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>كشف اسعار لمعرض أبو رامز</title>
+  <title>كشف أسعار لمعرض أبو رامز</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -67,38 +67,6 @@
     <p>مع تحيات ، المبرمج رامز عطاطرة 🔥</p>
 
     <table>
-      <tr><th>المنتج</th><th>السعر</th></tr>
-      <tr><td>ثلاجة</td><td>1200</td></tr>
-      <tr><td>غسالة</td><td>950</td></tr>
-      <tr><td>فرن</td><td>700</td></tr>
-      <tr><td>مروحة</td><td>250</td></tr>
-    </table>
-  </div>
-
-  <script>
-    function searchText() {
-      const input = document.getElementById("searchInput").value.trim();
-      const content = document.getElementById("content");
-      const text = content.innerHTML;
-
-      // إزالة أي تظليل قديم
-      content.innerHTML = text.replace(/<mark>|<\/mark>/g, "");
-
-      if (input === "") return;
-
-      // تظليل الكلمة المطلوبة (بدون حساسية للحروف)
-      const regex = new RegExp(`(${input})`, "gi");
-      content.innerHTML = content.innerHTML.replace(regex, "<mark>$1</mark>");
-    }
-  </script>
-
-</body>
-</html>
-
-    <table>
-        <tr><th>الاسم والرقم</th><th>وسعر آخر شراء</th></tr>
-    
-              <table>
     <tr>
         <td>رقم الصنف</td>
         <td>اسم الصنف</td>
@@ -5478,13 +5446,26 @@
         <td>I00001174</td>
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
-    </tr>
-</table>
-    </table>
+    </tr>  </table>
+  </div>
+
+  <script>
+    function searchText() {
+      const input = document.getElementById("searchInput").value.trim();
+      const content = document.getElementById("content");
+      const text = content.innerHTML;
+
+      // إزالة أي تظليل قديم
+      content.innerHTML = text.replace(/<mark>|<\/mark>/g, "");
+
+      if (input === "") return;
+
+      // تظليل الكلمة المطلوبة (بدون حساسية للحروف)
+      const regex = new RegExp(`(${input})`, "gi");
+      content.innerHTML = content.innerHTML.replace(regex, "<mark>$1</mark>");
+    }
+  </script>
+
 </body>
-
 </html>
-
-
-
 
