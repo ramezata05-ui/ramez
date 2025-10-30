@@ -5427,109 +5427,52 @@
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>  
-      </tbody>
+       </tbody>
     </table>
-  </div>
 
-  <!-- 🟢 الإضافة والحذف بأسفل الصفحة -->
-  <div class="footer-actions">
-    <h3>إضافة منتج جديد</h3>
-    <input type="text" id="newProduct" placeholder="اسم المنتج">
-    <input type="number" id="newPrice" placeholder="السعر">
-    <button id="addBtn">إضافة المنتج</button>
+    <div class="footer-actions">
+      <button onclick="addRow()">إضافة منتج جديد ➕</button>
+    </div>
   </div>
 
   <script>
-    // 🔹 تأمين النص داخل regex
-    function escapeRegExp(string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.getElementById("priceTable").getElementsByTagName("tbody")[0];
+    const resultCount = document.getElementById("resultCount");
 
-    // 🔹 إزالة التظليل من الصف
-    function clearHighlights(row) {
-      row.querySelectorAll('td').forEach(td => {
-        td.innerHTML = td.innerHTML.replace(/<mark>|<\/mark>/g, '');
-      });
-    }
+    // البحث المباشر أثناء الكتابة
+    searchInput.addEventListener("keyup", function() {
+        const query = this.value.toLowerCase().trim();
+        const words = query.split(" ").filter(word => word !== "");
+        let visibleCount = 0;
 
-    // 🔹 تظليل النص داخل الخلية
-    function highlightTextInCell(cell, regex) {
-      cell.innerHTML = cell.innerHTML.replace(regex, match => `<mark>${match}</mark>`);
-    }
-
-    // 🔍 دالة البحث المباشر
-    function searchAndFilter() {
-      const input = document.getElementById('searchInput').value.trim();
-      const tbody = document.querySelector('#priceTable tbody');
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      const resultCount = document.getElementById('resultCount');
-      let matches = 0;
-
-      if (input === '') {
-        rows.forEach(row => {
-          row.classList.remove('hidden');
-          clearHighlights(row);
+        Array.from(tableBody.rows).forEach(row => {
+            const text = row.cells[0].textContent.toLowerCase();
+            const match = words.every(word => text.includes(word));
+            row.style.display = match ? "" : "none";
+            if (match) visibleCount++;
         });
-        resultCount.textContent = '';
-        return;
-      }
 
-      const esc = escapeRegExp(input);
-      const regex = new RegExp(`(${esc})`, 'gi');
+        resultCount.textContent = `عدد النتائج: ${visibleCount}`;
+    });
 
-      rows.forEach(row => {
-        clearHighlights(row);
-        const rowText = Array.from(row.querySelectorAll('td')).map(td => td.textContent).join(' ');
-        if (regex.test(rowText)) {
-          row.classList.remove('hidden');
-          row.querySelectorAll('td').forEach(cell => {
-            if (regex.test(cell.textContent)) highlightTextInCell(cell, regex);
-          });
-          matches++;
-        } else {
-          row.classList.add('hidden');
+    // إضافة صف جديد
+    function addRow() {
+        const productName = prompt("أدخل اسم المنتج:");
+        const productPrice = prompt("أدخل سعر المنتج:");
+        if (productName && productPrice) {
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `<td>${productName}</td><td>${productPrice}</td><td><button onclick="deleteRow(this)">حذف</button></td>`;
+            searchInput.dispatchEvent(new Event('keyup')); // لتحديث البحث بعد الإضافة
         }
-      });
-
-      resultCount.textContent = matches > 0
-        ? `عدد النتائج: ${matches}`
-        : 'لا توجد نتائج مطابقة 😕';
     }
 
-    // 🔹 بحث مباشر أثناء الكتابة
-    document.getElementById('searchInput').addEventListener('input', searchAndFilter);
-
-    // 🟢 إضافة منتج جديد
-    document.getElementById('addBtn').addEventListener('click', () => {
-      const name = document.getElementById('newProduct').value.trim();
-      const price = document.getElementById('newPrice').value.trim();
-      const tbody = document.querySelector('#priceTable tbody');
-
-      if (name === '' || price === '') {
-        alert('يرجى إدخال اسم المنتج والسعر.');
-        return;
-      }
-
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="deleteBtn">حذف</button></td>`;
-      tbody.appendChild(newRow);
-
-      document.getElementById('newProduct').value = '';
-      document.getElementById('newPrice').value = '';
-
-      alert(`تمت إضافة المنتج (${name}) بنجاح ✅`);
-    });
-
-    // 🗑️ حذف المنتج
-    document.addEventListener('click', function(e) {
-      if (e.target.classList.contains('deleteBtn')) {
-        const row = e.target.closest('tr');
-        const productName = row.querySelector('td').textContent;
-        if (confirm(`هل أنت متأكد أنك تريد حذف المنتج (${productName})؟`)) {
-          row.remove();
-        }
-      }
-    });
+    // حذف صف
+    function deleteRow(btn) {
+        const row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        searchInput.dispatchEvent(new Event('keyup')); // إعادة تحديث البحث بعد الحذف
+    }
   </script>
 
 </body>
