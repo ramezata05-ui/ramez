@@ -12,8 +12,8 @@
     }
     h1 { text-align: center; }
     .search-box { margin-bottom: 20px; text-align: center; }
-    input[type="text"] { padding: 8px; width: 300px; font-size: 16px; }
-    button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin-right: 5px; }
+    input[type="text"], input[type="number"] { padding: 8px; font-size: 16px; margin: 5px; }
+    button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
     mark { background-color: yellow; }
     table { border-collapse: collapse; width: 100%; margin-top: 20px; }
     th, td { border: 1px solid #333; padding: 8px; text-align: right; }
@@ -25,16 +25,21 @@
       font-weight: bold;
       color: #444;
     }
+    .footer-actions {
+      text-align: center;
+      margin-top: 40px;
+      border-top: 2px solid #ddd;
+      padding-top: 20px;
+    }
   </style>
 </head>
 <body>
 
   <h1>كشف أسعار لمعرض أبو رامز</h1>
 
+  <!-- مربع البحث -->
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="اكتب اسم الصنف الي بتبحث عنه">
-    <p><button id="searchBtn">بحث</button></p>
-   <p> <button id="clearBtn">مسح</button></p>
+    <input type="text" id="searchInput" placeholder="اكتب اسم الصنف للبحث المباشر 🔍">
   </div>
 
   <div id="resultCount"></div>
@@ -45,7 +50,7 @@
 
     <table id="priceTable">
       <thead>
-        <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
+        <tr><th>المنتج</th><th>السعر</th><th>إجراء</th></tr>
       </thead>
       <tbody>
         <td>I00000001</td>
@@ -5421,25 +5426,38 @@
         <td>I00001174</td>
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
-    </tr>  </table>
+    </tr>  
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 🟢 الإضافة والحذف بأسفل الصفحة -->
+  <div class="footer-actions">
+    <h3>إضافة منتج جديد</h3>
+    <input type="text" id="newProduct" placeholder="اسم المنتج">
+    <input type="number" id="newPrice" placeholder="السعر">
+    <button id="addBtn">إضافة المنتج</button>
   </div>
 
   <script>
-    // تأمين regex من الأحرف الخاصة
+    // 🔹 تأمين النص داخل regex
     function escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    // 🔹 إزالة التظليل من الصف
     function clearHighlights(row) {
       row.querySelectorAll('td').forEach(td => {
         td.innerHTML = td.innerHTML.replace(/<mark>|<\/mark>/g, '');
       });
     }
 
+    // 🔹 تظليل النص داخل الخلية
     function highlightTextInCell(cell, regex) {
       cell.innerHTML = cell.innerHTML.replace(regex, match => `<mark>${match}</mark>`);
     }
 
+    // 🔍 دالة البحث المباشر
     function searchAndFilter() {
       const input = document.getElementById('searchInput').value.trim();
       const tbody = document.querySelector('#priceTable tbody');
@@ -5473,24 +5491,43 @@
         }
       });
 
-      if (matches > 0) {
-        resultCount.textContent = `عدد النتائج: ${matches}`;
-      } else {
-        resultCount.textContent = 'لا توجد نتائج مطابقة 😕';
-      }
+      resultCount.textContent = matches > 0
+        ? `عدد النتائج: ${matches}`
+        : 'لا توجد نتائج مطابقة 😕';
     }
 
-    document.getElementById('searchBtn').addEventListener('click', searchAndFilter);
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      document.getElementById('searchInput').value = '';
-      searchAndFilter();
+    // 🔹 بحث مباشر أثناء الكتابة
+    document.getElementById('searchInput').addEventListener('input', searchAndFilter);
+
+    // 🟢 إضافة منتج جديد
+    document.getElementById('addBtn').addEventListener('click', () => {
+      const name = document.getElementById('newProduct').value.trim();
+      const price = document.getElementById('newPrice').value.trim();
+      const tbody = document.querySelector('#priceTable tbody');
+
+      if (name === '' || price === '') {
+        alert('يرجى إدخال اسم المنتج والسعر.');
+        return;
+      }
+
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="deleteBtn">حذف</button></td>`;
+      tbody.appendChild(newRow);
+
+      document.getElementById('newProduct').value = '';
+      document.getElementById('newPrice').value = '';
+
+      alert(`تمت إضافة المنتج (${name}) بنجاح ✅`);
     });
 
-    // 🔥 ميزة جديدة: البحث التلقائي عند الضغط على Enter
-    document.getElementById('searchInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault(); // يمنع التحديث التلقائي
-        searchAndFilter();
+    // 🗑️ حذف المنتج
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('deleteBtn')) {
+        const row = e.target.closest('tr');
+        const productName = row.querySelector('td').textContent;
+        if (confirm(`هل أنت متأكد أنك تريد حذف المنتج (${productName})؟`)) {
+          row.remove();
+        }
       }
     });
   </script>
