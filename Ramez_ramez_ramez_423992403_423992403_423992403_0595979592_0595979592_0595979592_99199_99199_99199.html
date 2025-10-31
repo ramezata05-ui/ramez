@@ -37,9 +37,11 @@
 
   <h1>كشف أسعار لمعرض أبو رامز</h1>
 
-  <!-- مربع البحث -->
+  <!-- مربع البحث مع أزرار البحث والمسح -->
   <div class="search-box">
     <input type="text" id="searchInput" placeholder="اكتب اسم الصنف للبحث المباشر 🔍">
+    <button onclick="performSearch()">بحث 🔎</button>
+    <button onclick="clearSearch()">مسح ✖</button>
   </div>
 
   <div id="resultCount"></div>
@@ -5427,7 +5429,7 @@
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>  
-       </tbody>
+   </tbody>
     </table>
 
     <div class="footer-actions">
@@ -5440,42 +5442,63 @@
     const tableBody = document.getElementById("priceTable").getElementsByTagName("tbody")[0];
     const resultCount = document.getElementById("resultCount");
 
-    // البحث المباشر أثناء الكتابة
-    searchInput.addEventListener("keyup", function() {
-        const query = this.value.toLowerCase().trim();
-        const words = query.split(" ").filter(word => word !== "");
-        let visibleCount = 0;
+    // تحويل الأرقام العربية إلى غربية
+    function normalizeNumbers(str) {
+      const arabicNumbers = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+      const englishNumbers = ['0','1','2','3','4','5','6','7','8','9'];
+      let result = str;
+      arabicNumbers.forEach((num, i) => {
+        result = result.replaceAll(num, englishNumbers[i]);
+      });
+      return result;
+    }
 
-        Array.from(tableBody.rows).forEach(row => {
-            const text = row.cells[0].textContent.toLowerCase();
-            const match = words.every(word => text.includes(word));
-            row.style.display = match ? "" : "none";
-            if (match) visibleCount++;
-        });
+    // دالة البحث
+    function performSearch() {
+      let query = normalizeNumbers(searchInput.value.toLowerCase().trim());
+      const words = query.split(" ").filter(word => word !== "");
+      let visibleCount = 0;
 
-        resultCount.textContent = `عدد النتائج: ${visibleCount}`;
-    });
+      Array.from(tableBody.rows).forEach(row => {
+        const text = normalizeNumbers(row.cells[0].textContent.toLowerCase());
+        const match = words.length === 0 || words.some(word => text.includes(word));
+        row.style.display = match ? "" : "none";
+        if (match) visibleCount++;
+      });
+
+      resultCount.textContent = `عدد النتائج: ${visibleCount}`;
+    }
+
+    // البحث الآني أثناء الكتابة
+    searchInput.addEventListener("keyup", performSearch);
+
+    // مسح البحث
+    function clearSearch() {
+      searchInput.value = '';
+      performSearch();
+    }
 
     // إضافة صف جديد
     function addRow() {
-        const productName = prompt("أدخل اسم المنتج:");
-        const productPrice = prompt("أدخل سعر المنتج:");
-        if (productName && productPrice) {
-            const newRow = tableBody.insertRow();
-            newRow.innerHTML = `<td>${productName}</td><td>${productPrice}</td><td><button onclick="deleteRow(this)">حذف</button></td>`;
-            searchInput.dispatchEvent(new Event('keyup')); // لتحديث البحث بعد الإضافة
-        }
+      const productName = prompt("أدخل اسم المنتج:");
+      const productPrice = prompt("أدخل سعر المنتج:");
+      if (productName && productPrice) {
+        const newRow = tableBody.insertRow();
+        newRow.innerHTML = `<td>${productName}</td><td>${productPrice}</td><td><button onclick="deleteRow(this)">حذف</button></td>`;
+        performSearch(); // تحديث البحث بعد الإضافة
+      }
     }
 
     // حذف صف
     function deleteRow(btn) {
-        const row = btn.parentNode.parentNode;
-        row.parentNode.removeChild(row);
-        searchInput.dispatchEvent(new Event('keyup')); // إعادة تحديث البحث بعد الحذف
+      const row = btn.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+      performSearch(); // تحديث البحث بعد الحذف
     }
+
+    // تشغيل البحث عند تحميل الصفحة لعرض كل المنتجات
+    performSearch();
   </script>
 
 </body>
 </html>
-
-
