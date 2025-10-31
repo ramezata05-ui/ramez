@@ -42,7 +42,7 @@
   <div id="content">
     <table id="priceTable">
       <thead>
-        <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
+        <tr><th>المنتج</th><th>السعر</th></tr>
       </thead>
       <tbody>
         <td>I00000001</td>
@@ -5419,71 +5419,65 @@
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>  
-        </tbody>
+  </tbody>
     </table>
   </div>
 
   <script>
-    // 🔹 تأمين النص داخل regex
-    function escapeRegExp(string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-
-    // 🔹 إزالة التظليل من الصف
-    function clearHighlights(row) {
-      row.querySelectorAll('td').forEach(td => {
-        td.innerHTML = td.innerHTML.replace(/<mark>|<\/mark>/g, '');
+    // 🔹 إزالة أي تظليل
+    function clearHighlights() {
+      document.querySelectorAll('#priceTable td').forEach(td => {
+        td.innerHTML = td.textContent;
       });
     }
 
-    // 🔹 تظليل الكلمات في الخلية
-    function highlightWords(cell, words) {
-      let html = cell.textContent;
-      words.forEach(word => {
-        const regex = new RegExp(`(${escapeRegExp(word)})`, 'gi');
-        html = html.replace(regex, '<mark>$1</mark>');
-      });
-      cell.innerHTML = html;
-    }
-
-    // 🔍 بحث ذكي
+    // 🔹 بحث ذكي مرن
     function smartSearch() {
-      const input = document.getElementById('searchInput').value.trim();
-      const tbody = document.querySelector('#priceTable tbody');
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      const resultCount = document.getElementById('resultCount');
+      const input = document.getElementById('searchInput').value.trim().toLowerCase();
+      const rows = Array.from(document.querySelectorAll('#priceTable tbody tr'));
       let matches = 0;
 
-      rows.forEach(row => clearHighlights(row));
+      clearHighlights();
 
       if (input === '') {
         rows.forEach(row => row.classList.remove('hidden'));
-        resultCount.textContent = '';
+        document.getElementById('resultCount').textContent = '';
         return;
       }
 
-      const words = input.split(/\s+/); // تقسيم البحث إلى كلمات
+      const words = input.split(/\s+/);
 
       rows.forEach(row => {
-        const rowText = row.querySelector('td').textContent.toLowerCase();
-        const isMatch = words.every(word => rowText.includes(word.toLowerCase())); // كل الكلمات موجودة
+        const rowText = Array.from(row.querySelectorAll('td'))
+                             .map(td => td.textContent.toLowerCase())
+                             .join(' ');
+        const isMatch = words.every(word => rowText.includes(word));
+
         if (isMatch) {
           row.classList.remove('hidden');
-          highlightWords(row.querySelector('td'), words);
+          // تظليل كل كلمة في أي خلية
+          row.querySelectorAll('td').forEach(td => {
+            words.forEach(word => {
+              const regex = new RegExp(`(${word})`, 'gi');
+              td.innerHTML = td.innerHTML.replace(regex, '<mark>$1</mark>');
+            });
+          });
           matches++;
         } else {
           row.classList.add('hidden');
         }
       });
 
-      resultCount.textContent = matches > 0
+      document.getElementById('resultCount').textContent = matches > 0
         ? `عدد النتائج: ${matches}`
         : 'لا توجد نتائج مطابقة 😕';
     }
 
-    // البحث أثناء الكتابة
+    // 🔹 تفعيل البحث أثناء الكتابة والزر
     document.getElementById('searchInput').addEventListener('input', smartSearch);
     document.getElementById('searchBtn').addEventListener('click', smartSearch);
+
+    // 🔹 زر مسح البحث
     document.getElementById('clearBtn').addEventListener('click', () => {
       document.getElementById('searchInput').value = '';
       smartSearch();
@@ -5492,3 +5486,4 @@
 
 </body>
 </html>
+
