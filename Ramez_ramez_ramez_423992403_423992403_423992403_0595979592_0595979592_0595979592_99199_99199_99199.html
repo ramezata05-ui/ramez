@@ -27,7 +27,16 @@ th { background-color:#f2f2f2; }
 
 
 
-<div id="invoiceSection" style="display:none;">
+
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍">
+<div>
+  <button id="searchBtn">بحث</button>
+<button id="clearBtn">مسح ✖️</button>
+  </div>
+  
+  <div id="invoiceSection" style="display:none;">
 <h2 style="text-align:center;">الفاتورة</h2>
 <table id="invoiceTable">
 <thead>
@@ -37,13 +46,7 @@ th { background-color:#f2f2f2; }
 </table>
 <div id="total">الإجمالي: 0</div>
 </div>
-
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍">
-<div>
-  <button id="searchBtn">بحث</button>
-<button id="clearBtn">مسح ✖️</button>
-  </div>
+  
 <p>
 <div style="background-color:#1D70B8;color:white;padding:5px 15px;border-radius:5px;display:inline-block;box-shadow:1px 1px 4px rgba(0,0,0,0.2);">
 <h4 style="margin:0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
@@ -5648,6 +5651,7 @@ smartSearch();
 
 </body>
 </html>
+
 
 
 
