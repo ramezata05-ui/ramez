@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>موقع خاص لمعرض أبو رامز</title>
+<title>كشف أسعار لمعرض أبو رامز</title>
 <style>
 body { font-family: Arial; margin: 40px; padding: 20px; }
 h1 { text-align:center; }
@@ -18,47 +18,32 @@ th { background-color:#f2f2f2; }
 #resultCount { text-align:center; margin-top:10px; font-weight:bold; color:#444; }
 #invoiceTable th, #invoiceTable td { text-align:right; }
 #total { font-weight:bold; margin-top:10px; text-align:right; }
+.qty-input { width:40px; text-align:center; }
 </style>
 </head>
 <body>
 
-<h1>موقع خاص لمعرض أبو رامز</h1>
-  <h1>=================</h1>
+<h1>كشف أسعار لمعرض أبو رامز</h1>
 
-
+<div style="text-align:center; margin-bottom:20px;">
+  <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
+</div>
 
 <div id="invoiceSection" style="display:none;">
 <h2 style="text-align:center;">الفاتورة</h2>
 <table id="invoiceTable">
 <thead>
-<tr><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
+<tr><th>الصنف</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th><th>إجراء</th></tr>
 </thead>
 <tbody></tbody>
 </table>
 <div id="total">الإجمالي: 0</div>
-  <h1>=================</h1>
 </div>
 
 <div class="search-box">
 <input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍">
-  <div>
 <button id="searchBtn">بحث</button>
-<button id="clearBtn">مسح ✖️</button></div>
-  <div style="text-align:center; margin-bottom:20px;">
-  <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
-    
-    <div id="invoiceSection" style="display:none;">
-<h2 style="text-align:center;">الفاتورة</h2>
-<table id="invoiceTable">
-<thead>
-<tr><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
-</thead>
-<tbody></tbody>
-</table>
-<div id="total">الإجمالي: 0</div>
-</div>
-</div>
-  
+<button id="clearBtn">مسح ✖️</button>
 <p>
 <div style="background-color:#1D70B8;color:white;padding:5px 15px;border-radius:5px;display:inline-block;box-shadow:1px 1px 4px rgba(0,0,0,0.2);">
 <h4 style="margin:0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
@@ -71,7 +56,7 @@ th { background-color:#f2f2f2; }
 <div id="content">
 <table id="priceTable">
 <thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
+<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>الكمية</th><th>إجراء</th></tr>
 </thead>
 <tbody>
     <tr>
@@ -5566,15 +5551,18 @@ createInvoiceBtn.addEventListener('click', () => { invoiceSection.style.display=
 function updateTotal() {
   let sum = 0;
   Array.from(invoiceTable.rows).forEach(row => {
-    sum += parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
+    const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
+    const qty = parseInt(row.cells[2].innerText) || 0;
+    row.cells[3].innerText = (price * qty).toLocaleString();
+    sum += price * qty;
   });
   totalDiv.innerText = `الإجمالي: ${sum.toLocaleString()}`;
 }
 
 // إضافة صف للفاتورة
-function addToInvoice(name, price) {
+function addToInvoice(name, price, qty) {
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="removeBtn">حذف</button></td>`;
+  tr.innerHTML = `<td>${name}</td><td>${price}</td><td>${qty}</td><td>${price*qty}</td><td><button class="removeBtn">حذف</button></td>`;
   invoiceTable.appendChild(tr);
   updateTotal();
 
@@ -5584,12 +5572,11 @@ function addToInvoice(name, price) {
   });
 }
 
-// بحث ذكي
+// بحث ذكي مع أزرار الكمية
 function smartSearch() {
   const input = searchInput.value.trim().toLowerCase();
   let matches = 0;
   Array.from(priceTable.rows).forEach(row => {
-    // إعادة النص الأصلي بدون تظليل
     row.cells[0].innerText = row.cells[0].dataset.original || row.cells[0].innerText;
     row.cells[1].innerText = row.cells[1].dataset.original || row.cells[1].innerText;
     row.cells[2].innerText = row.cells[2].dataset.original || row.cells[2].innerText;
@@ -5599,20 +5586,49 @@ function smartSearch() {
       row.classList.remove('hidden');
       matches++;
 
-      // إضافة الزر إذا لم يكن موجودًا
+      // إضافة عمود الكمية إذا لم يكن موجود
+      if(!row.querySelector('.qty-input')) {
+        const qtyCell = row.insertCell(3);
+        const minusBtn = document.createElement('button');
+        minusBtn.innerText = '-';
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'text';
+        qtyInput.value = '1';
+        qtyInput.readOnly = true;
+        qtyInput.classList.add('qty-input');
+        const plusBtn = document.createElement('button');
+        plusBtn.innerText = '+';
+        qtyCell.appendChild(minusBtn);
+        qtyCell.appendChild(qtyInput);
+        qtyCell.appendChild(plusBtn);
+
+        minusBtn.addEventListener('click', () => {
+          let val = parseInt(qtyInput.value);
+          if(val>1) qtyInput.value = val-1;
+        });
+        plusBtn.addEventListener('click', () => {
+          let val = parseInt(qtyInput.value);
+          qtyInput.value = val+1;
+        });
+      }
+
+      // إضافة زر الإضافة إذا لم يكن موجود
       if(!row.querySelector('.addBtn')) {
+        const addCell = row.insertCell(4);
         const btn = document.createElement('button');
         btn.innerText = 'إضافة للفاتورة';
         btn.classList.add('addBtn');
-        btn.addEventListener('click', () => addToInvoice(row.cells[1].innerText, row.cells[2].innerText));
-        const cell = row.insertCell(3);
-        cell.appendChild(btn);
+        addCell.appendChild(btn);
+        btn.addEventListener('click', () => addToInvoice(
+          row.cells[1].innerText,
+          parseFloat(row.cells[2].innerText),
+          parseInt(row.cells[3].querySelector('input').value)
+        ));
       }
     } else {
       row.classList.add('hidden');
     }
   });
-
   resultCount.innerText = matches>0?`عدد النتائج: ${matches}`:'لا توجد نتائج مطابقة 😕';
 }
 
@@ -5626,7 +5642,7 @@ searchInput.addEventListener('input', smartSearch);
 searchBtn.addEventListener('click', smartSearch);
 clearBtn.addEventListener('click', () => { searchInput.value=''; smartSearch(); });
 
-// إضافة أزرار الإضافة عند التحميل
+// تفعيل البحث عند التحميل لإضافة الأزرار
 smartSearch();
 </script>
 
