@@ -5455,7 +5455,7 @@
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>  
-  </tbody>
+ </tbody>
     </table>
   </div>
 
@@ -5537,7 +5537,7 @@
       invoiceSection.style.display = 'block';
     });
 
-    // 🔹 أضف زر "إضافة للفاتورة" تلقائيًا لكل صف
+    // 🔹 إضافة زر "إضافة للفاتورة" لكل صف تلقائيًا
     const rows = document.querySelectorAll('#priceTable tbody tr');
     rows.forEach(row => {
       const addCell = document.createElement('td');
@@ -5546,9 +5546,12 @@
       addBtn.classList.add('addBtn');
       addCell.appendChild(addBtn);
       row.appendChild(addCell);
+    });
 
-      // ربط زر الإضافة بالوظيفة
-      addBtn.addEventListener('click', () => {
+    // 🔹 استخدام Event Delegation للربط بالجدول
+    document.querySelector('#priceTable tbody').addEventListener('click', function(e) {
+      if (e.target && e.target.classList.contains('addBtn')) {
+        const row = e.target.closest('tr');
         const name = row.cells[1].innerText;
         const price = row.cells[2].innerText;
 
@@ -5557,16 +5560,18 @@
         invoiceTable.appendChild(invoiceRow);
         updateTotal();
 
+        // حذف صنف من الفاتورة
         invoiceRow.querySelector('.removeBtn').addEventListener('click', () => {
           invoiceRow.remove();
           updateTotal();
         });
-      });
+      }
     });
   </script>
 
 </body>
 </html>
+
 
 
 
