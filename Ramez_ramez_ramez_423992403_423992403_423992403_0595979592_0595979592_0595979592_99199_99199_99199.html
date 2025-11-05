@@ -1,71 +1,86 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>كشف أسعار لمعرض أبو رامز</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 40px; padding: 20px; }
-h1 { text-align: center; }
-.search-box { margin-bottom: 20px; text-align: center; }
-input[type="text"] { padding: 8px; font-size: 16px; margin: 5px; }
-button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
-mark { background-color: yellow; }
-table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-th, td { border: 1px solid #333; padding: 8px; text-align: right; }
-th { background-color: #f2f2f2; }
-.hidden { display: none; }
-#resultCount { text-align: center; margin-top: 10px; font-weight: bold; color: #444; }
-#invoiceTable th, #invoiceTable td { text-align: right; }
-#total { font-weight: bold; margin-top: 10px; text-align: right; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>كشف أسعار لمعرض أبو رامز</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    .search-box { margin-bottom: 20px; text-align: center; }
+    input[type="text"] { padding: 8px; font-size: 16px; margin: 5px; }
+    button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
+    mark { background-color: yellow; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: right; }
+    th { background-color: #f2f2f2; }
+    .hidden { display: none; }
+    #resultCount {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #444;
+    }
+    #invoiceTable th, #invoiceTable td { text-align: right; }
+    #total { font-weight: bold; margin-top: 10px; text-align: right; }
+  </style>
 </head>
 <body>
 
-<h1>كشف أسعار لمعرض أبو رامز</h1>
+  <h1>كشف أسعار لمعرض أبو رامز</h1>
 
-<div style="text-align: center; margin-bottom: 20px;">
-<button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
-</div>
+  <!-- زر إنشاء الفاتورة -->
+  <div style="text-align: center; margin-bottom: 20px;">
+    <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
+  </div>
 
-<div id="invoiceSection" style="display:none;">
-<h2 style="text-align:center;">الفاتورة</h2>
-<table id="invoiceTable">
-<thead>
-<tr><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
-</thead>
-<tbody></tbody>
-</table>
-<div id="total">الإجمالي: 0</div>
-</div>
+  <!-- جدول الفاتورة -->
+  <div id="invoiceSection" style="display:none;">
+    <h2 style="text-align:center;">الفاتورة</h2>
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th>الصنف</th>
+          <th>السعر</th>
+          <th>إجراء</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="total">الإجمالي: 0</div>
+  </div>
 
-<div class="search-box">
-<p><input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍"></p>
-<button id="searchBtn">بحث</button>
-<button id="clearBtn">مسح ✖️</button>
-<p>
-<div style="
-background-color: #1D70B8;
-color: white;
-padding: 5px 15px;
-border-radius: 5px;
-display: inline-block;
-font-family: Arial, sans-serif;
-box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
-">
-<h4 style="margin: 0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
-</div>
-</p>
-</div>
+  <div class="search-box">
+    <p><input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍"></p>
+    <button id="searchBtn">بحث</button>
+    <button id="clearBtn">مسح ✖️</button>
+    <p>
+      <div style="
+        background-color: #1D70B8;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 5px;
+        display: inline-block;
+        font-family: Arial, sans-serif;
+        box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+      ">
+        <h4 style="margin: 0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
+      </div>
+    </p>
+  </div>
 
-<div id="resultCount"></div>
+  <div id="resultCount"></div>
 
-<div id="content">
-<table id="priceTable">
-<thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
-</thead>
-<tbody>
+  <div id="content">
+    <table id="priceTable">
+      <thead>
+        <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
+      </thead>
+      <tbody>
         <td>I00000001</td>
         <td>غسالة ال جي 10.5 كيلو سلفر LG V3</td>
         <td>2,520.00</td>
@@ -5441,118 +5456,116 @@ box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         <td>670.00</td>
     </tr>  
  </tbody>
-</table>
-</div>
+    </table>
+  </div>
 
-<script>
-// إزالة أي تظليل
-function clearHighlights() {
-  document.querySelectorAll('#priceTable td').forEach(td => { td.innerHTML = td.textContent; });
-}
-
-// بحث ذكي مرن
-function smartSearch() {
-  const input = document.getElementById('searchInput').value.trim().toLowerCase();
-  const rows = Array.from(document.querySelectorAll('#priceTable tbody tr'));
-  let matches = 0;
-
-  clearHighlights();
-
-  if (input === '') {
-    rows.forEach(row => row.classList.remove('hidden'));
-    document.getElementById('resultCount').textContent = '';
-    return;
-  }
-
-  const words = input.split(/\s+/);
-
-  rows.forEach(row => {
-    const rowText = Array.from(row.querySelectorAll('td'))
-                         .map(td => td.textContent.toLowerCase())
-                         .join(' ');
-    const isMatch = words.every(word => rowText.includes(word));
-    if (isMatch) {
-      row.classList.remove('hidden');
-      row.querySelectorAll('td').forEach(td => {
-        words.forEach(word => {
-          const regex = new RegExp(`(${word})`, 'gi');
-          td.innerHTML = td.innerHTML.replace(regex, '<mark>$1</mark>');
-        });
+  <script>
+    // 🔹 إزالة أي تظليل
+    function clearHighlights() {
+      document.querySelectorAll('#priceTable td').forEach(td => {
+        td.innerHTML = td.textContent;
       });
-      matches++;
-    } else {
-      row.classList.add('hidden');
     }
-  });
 
-  document.getElementById('resultCount').textContent = matches > 0
-    ? `عدد النتائج: ${matches}`
-    : 'لا توجد نتائج مطابقة 😕';
-}
+    // 🔹 بحث ذكي مرن
+    function smartSearch() {
+      const input = document.getElementById('searchInput').value.trim().toLowerCase();
+      const rows = Array.from(document.querySelectorAll('#priceTable tbody tr'));
+      let matches = 0;
 
-document.getElementById('searchInput').addEventListener('input', smartSearch);
-document.getElementById('searchBtn').addEventListener('click', smartSearch);
-document.getElementById('clearBtn').addEventListener('click', () => {
-  document.getElementById('searchInput').value = '';
-  smartSearch();
-});
+      clearHighlights();
 
-const createInvoiceBtn = document.getElementById('createInvoiceBtn');
-const invoiceSection = document.getElementById('invoiceSection');
-const invoiceTable = document.getElementById('invoiceTable').querySelector('tbody');
-const totalDiv = document.getElementById('total');
+      if (input === '') {
+        rows.forEach(row => row.classList.remove('hidden'));
+        document.getElementById('resultCount').textContent = '';
+        return;
+      }
 
-function updateTotal() {
-  let sum = 0;
-  Array.from(invoiceTable.rows).forEach(row => {
-    const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
-    sum += price;
-  });
-  totalDiv.innerText = `الإجمالي: ${sum.toLocaleString()}`;
-}
+      const words = input.split(/\s+/);
 
-createInvoiceBtn.addEventListener('click', () => {
-  invoiceSection.style.display = 'block';
-});
+      rows.forEach(row => {
+        const rowText = Array.from(row.querySelectorAll('td'))
+                             .map(td => td.textContent.toLowerCase())
+                             .join(' ');
+        const isMatch = words.every(word => rowText.includes(word));
 
-// إضافة صنف للفاتورة باستخدام Event Delegation
-document.querySelector('#priceTable tbody').addEventListener('click', function(e) {
-  if (e.target && e.target.classList.contains('addBtn')) {
-    const row = e.target.closest('tr');
-    const name = row.cells[1].innerText;
-    const price = row.cells[2].innerText;
+        if (isMatch) {
+          row.classList.remove('hidden');
+          row.querySelectorAll('td').forEach(td => {
+            words.forEach(word => {
+              const regex = new RegExp(`(${word})`, 'gi');
+              td.innerHTML = td.innerHTML.replace(regex, '<mark>$1</mark>');
+            });
+          });
+          matches++;
+        } else {
+          row.classList.add('hidden');
+        }
+      });
 
-    const invoiceRow = document.createElement('tr');
-    invoiceRow.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="removeBtn">حذف</button></td>`;
-    invoiceTable.appendChild(invoiceRow);
-    updateTotal();
+      document.getElementById('resultCount').textContent = matches > 0
+        ? `عدد النتائج: ${matches}`
+        : 'لا توجد نتائج مطابقة 😕';
+    }
 
-    invoiceRow.querySelector('.removeBtn').addEventListener('click', () => {
-      invoiceRow.remove();
-      updateTotal();
+    document.getElementById('searchInput').addEventListener('input', smartSearch);
+    document.getElementById('searchBtn').addEventListener('click', smartSearch);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      smartSearch();
     });
-  }
-});
 
-// إضافة أزرار "إضافة للفاتورة" تلقائياً لكل صف
-function addAddButtons() {
-  document.querySelectorAll('#priceTable tbody tr').forEach(row => {
-    if (!row.querySelector('.addBtn')) {
-      const addCell = document.createElement('td');
-      const addBtn = document.createElement('button');
-      addBtn.innerText = 'إضافة للفاتورة';
-      addBtn.classList.add('addBtn');
-      addCell.appendChild(addBtn);
-      row.appendChild(addCell);
+    // 🔹 إنشاء فاتورة
+    const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+    const invoiceSection = document.getElementById('invoiceSection');
+    const invoiceTable = document.getElementById('invoiceTable').querySelector('tbody');
+    const totalDiv = document.getElementById('total');
+
+    function updateTotal() {
+      let sum = 0;
+      Array.from(invoiceTable.rows).forEach(row => {
+        const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
+        sum += price;
+      });
+      totalDiv.innerText = `الإجمالي: ${sum.toLocaleString()}`;
     }
-  });
-}
 
-// عند تحميل الصفحة وبعد البحث
-addAddButtons();
-document.getElementById('searchInput').addEventListener('input', addAddButtons);
+    createInvoiceBtn.addEventListener('click', () => {
+      invoiceSection.style.display = 'block';
+    });
 
-</script>
+    // 🔹 إضافة زر "إضافة للفاتورة" لكل صف مرة واحدة
+    function addAddButtons() {
+      document.querySelectorAll('#priceTable tbody tr').forEach(row => {
+        if (!row.querySelector('.addBtn')) {
+          const addCell = document.createElement('td');
+          const addBtn = document.createElement('button');
+          addBtn.innerText = 'إضافة للفاتورة';
+          addBtn.classList.add('addBtn');
+          addCell.appendChild(addBtn);
+          row.appendChild(addCell);
+
+          // عند الضغط على الزر، إضافة الصف للفاتورة
+          addBtn.addEventListener('click', () => {
+            const name = row.cells[1].innerText;
+            const price = row.cells[2].innerText;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="removeBtn">حذف</button></td>`;
+            invoiceTable.appendChild(tr);
+            updateTotal();
+
+            tr.querySelector('.removeBtn').addEventListener('click', () => {
+              tr.remove();
+              updateTotal();
+            });
+          });
+        }
+      });
+    }
+
+    addAddButtons();
+  </script>
 
 </body>
 </html>
