@@ -5527,41 +5527,47 @@
     function updateTotal() {
       let sum = 0;
       Array.from(invoiceTable.rows).forEach(row => {
-        const price = parseFloat(row.cells[1].innerText) || 0;
+        const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
         sum += price;
       });
-      totalDiv.innerText = `الإجمالي: ${sum}`;
+      totalDiv.innerText = `الإجمالي: ${sum.toLocaleString()}`;
     }
 
     createInvoiceBtn.addEventListener('click', () => {
       invoiceSection.style.display = 'block';
     });
 
-    // 🔹 إضافة صنف للفاتورة
-    document.querySelectorAll('.addBtn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        const row = e.target.closest('tr');
+    // 🔹 أضف زر "إضافة للفاتورة" تلقائيًا لكل صف
+    const rows = document.querySelectorAll('#priceTable tbody tr');
+    rows.forEach(row => {
+      const addCell = document.createElement('td');
+      const addBtn = document.createElement('button');
+      addBtn.innerText = 'إضافة للفاتورة';
+      addBtn.classList.add('addBtn');
+      addCell.appendChild(addBtn);
+      row.appendChild(addCell);
+
+      // ربط زر الإضافة بالوظيفة
+      addBtn.addEventListener('click', () => {
         const name = row.cells[1].innerText;
         const price = row.cells[2].innerText;
 
-        // إضافة صف جديد للفاتورة
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="removeBtn">حذف</button></td>`;
-        invoiceTable.appendChild(tr);
+        const invoiceRow = document.createElement('tr');
+        invoiceRow.innerHTML = `<td>${name}</td><td>${price}</td><td><button class="removeBtn">حذف</button></td>`;
+        invoiceTable.appendChild(invoiceRow);
         updateTotal();
 
-        // حذف صنف من الفاتورة
-        tr.querySelector('.removeBtn').addEventListener('click', () => {
-          tr.remove();
+        invoiceRow.querySelector('.removeBtn').addEventListener('click', () => {
+          invoiceRow.remove();
           updateTotal();
         });
       });
     });
-
   </script>
 
 </body>
 </html>
+
 
 
 
