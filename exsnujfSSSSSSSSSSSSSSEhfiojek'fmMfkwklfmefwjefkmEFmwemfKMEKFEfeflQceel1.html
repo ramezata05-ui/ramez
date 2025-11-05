@@ -1,79 +1,36 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>كشف أسعار لمعرض أبو رامز</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      padding: 20px;
-    }
-    h1 { text-align: center; }
-    .search-box { margin-bottom: 20px; text-align: center; }
-    input[type="text"] { padding: 8px; font-size: 16px; margin: 5px; }
-    button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
-    mark { background-color: yellow; }
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    th, td { border: 1px solid #333; padding: 8px; text-align: right; }
-    th { background-color: #f2f2f2; }
-    .hidden { display: none; }
-    #resultCount {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: bold;
-      color: #444;
-    }
-    #invoiceSection {
-      margin-top: 40px;
-      border-top: 3px solid #1D70B8;
-      padding-top: 20px;
-    }
-    #invoiceSection h2 {
-      text-align: center;
-      color: #1D70B8;
-    }
-    #totalPrice {
-      text-align: left;
-      font-size: 18px;
-      font-weight: bold;
-      color: #1D70B8;
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كشف أسعار لمعرض أبو رامز</title>
+<style>
+  body {font-family: Arial; margin: 40px; padding:20px;}
+  h1{text-align:center;}
+  table {border-collapse: collapse; width:100%; margin-top:20px;}
+  th, td {border: 1px solid #333; padding: 8px; text-align: right;}
+  th {background-color:#f2f2f2;}
+  button {padding:4px 8px; margin:2px; cursor:pointer;}
+  #invoiceSection {margin-top:40px; border-top:3px solid #1D70B8; padding-top:20px;}
+  #invoiceSection h2{text-align:center;color:#1D70B8;}
+  #totalPrice{font-weight:bold; color:#1D70B8; margin-top:10px;}
+  .hidden {display:none;}
+</style>
 </head>
 <body>
 
-  <h1>كشف أسعار لمعرض أبو رامز</h1>
+<h1>كشف أسعار لمعرض أبو رامز</h1>
 
-  <div class="search-box">
-    <button id="invoiceBtn" style="background-color:#1D70B8;color:white;border-radius:6px;">🧾 إنشاء فاتورة</button><br><br>
-    <input type="text" id="searchInput" placeholder="   اكبس هون وسوي بحث 🔍 ">
-    <button id="searchBtn">بحث</button>
-    <button id="clearBtn">مسح ✖️</button>
-    <p>
-      <div style="
-        background-color: #1D70B8;
-        color: white;
-        padding: 5px 15px;
-        border-radius: 5px;
-        display: inline-block;
-        font-family: Arial, sans-serif;
-        box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
-      ">
-        <h4 style="margin: 0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
-      </div>
-    </p>
-  </div>
+<div style="text-align:center; margin-bottom:20px;">
+  <button id="createInvoiceBtn" style="background-color:#1D70B8;color:white;border:none;border-radius:6px;padding:10px 20px;">🧾 إنشاء فاتورة</button>
+</div>
 
-  <div id="resultCount"></div>
+<table id="priceTable">
+  <thead>
+    <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
+  </thead>
+  <tbody>
 
-  <div id="content">
-    <table id="priceTable">
-      <thead>
-        <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
-      </thead>
         <td>I00000001</td>
         <td>غسالة ال جي 10.5 كيلو سلفر LG V3</td>
         <td>2,520.00</td>
@@ -5448,28 +5405,19 @@
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>  
-</tbody>
+  </tbody>
 </table>
 
-<!-- زر إنشاء الفاتورة -->
-<div style="text-align: center; margin-top: 20px;">
-  <button id="createInvoiceBtn" style="background-color: #1D70B8; color: white; padding: 10px 20px; border: none; border-radius: 6px;">🧾 إنشاء فاتورة</button>
-</div>
-
 <!-- منطقة الفاتورة -->
-<div id="invoiceSection" class="hidden" style="margin-top: 40px;">
+<div id="invoiceSection" class="hidden">
   <h2>فاتورة المبيعات</h2>
   <table id="invoiceTable">
     <thead>
-      <tr>
-        <th>رقم الصنف</th>
-        <th>الصنف</th>
-        <th>السعر</th>
-      </tr>
+      <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
     </thead>
     <tbody></tbody>
   </table>
-  <h3 id="totalPrice">الإجمالي: 0 ₪</h3>
+  <div id="totalPrice">الإجمالي: 0 ₪</div>
 </div>
 
 <script>
@@ -5479,24 +5427,20 @@ const invoiceTableBody = document.querySelector("#invoiceTable tbody");
 const totalPriceDisplay = document.getElementById("totalPrice");
 let total = 0;
 
-// عند الضغط على إنشاء فاتورة
+// عرض/إخفاء الفاتورة
 createInvoiceBtn.addEventListener("click", () => {
   invoiceSection.classList.toggle("hidden");
 });
 
-// إضافة زر "إضافة للفاتورة" لكل صف
+// أضف زر ➕ أضف لكل صف
 const rows = document.querySelectorAll("#priceTable tbody tr");
 rows.forEach(row => {
   const addButton = document.createElement("button");
   addButton.textContent = "➕ أضف";
-  addButton.style.padding = "4px 8px";
-  addButton.style.marginRight = "8px";
-  addButton.style.cursor = "pointer";
   addButton.style.backgroundColor = "#4CAF50";
   addButton.style.color = "white";
   addButton.style.border = "none";
   addButton.style.borderRadius = "4px";
-
   const cell = document.createElement("td");
   cell.appendChild(addButton);
   row.appendChild(cell);
@@ -5505,26 +5449,44 @@ rows.forEach(row => {
     const cells = row.querySelectorAll("td");
     const id = cells[0].textContent;
     const name = cells[1].textContent;
-    const price = parseFloat(cells[2].textContent);
-    addToInvoice(id, name, price);
+    let text = cells[2].textContent.trim();
+
+    // التعامل مع أسعار مثل 2.500 أو 3.200.000
+    if ((text.match(/\./g) || []).length > 1 || text.match(/\.\d{3,}/)) {
+      text = text.replace(/\./g, "");
+    }
+
+    // جمع جميع الأرقام في الخلية
+    const price = text.match(/\d+(\.\d+)?/g)?.map(v => parseFloat(v)).reduce((a,b)=>a+b,0) || 0;
+
+    addToInvoice(id,name,price);
   });
 });
 
-// دالة لإضافة صنف إلى الفاتورة
-function addToInvoice(id, name, price) {
+// إضافة صنف للفاتورة
+function addToInvoice(id,name,price){
   const newRow = document.createElement("tr");
   newRow.innerHTML = `
     <td>${id}</td>
     <td>${name}</td>
-    <td>${price.toFixed(2)} ₪</td>
+    <td>${price.toLocaleString('en-US')} ₪</td>
+    <td><button class="deleteBtn" style="background-color:#f44336;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;">🗑️ حذف</button></td>
   `;
   invoiceTableBody.appendChild(newRow);
   total += price;
-  totalPriceDisplay.textContent = "الإجمالي: " + total.toFixed(2) + " ₪";
+  totalPriceDisplay.textContent = "الإجمالي: " + total.toLocaleString('en-US') + " ₪";
+
+  // حذف الصنف من الفاتورة
+  newRow.querySelector(".deleteBtn").addEventListener("click",()=>{
+    invoiceTableBody.removeChild(newRow);
+    total -= price;
+    totalPriceDisplay.textContent = "الإجمالي: " + total.toLocaleString('en-US') + " ₪";
+  });
 }
 </script>
 
-
+</body>
+</html>
 
 
 
