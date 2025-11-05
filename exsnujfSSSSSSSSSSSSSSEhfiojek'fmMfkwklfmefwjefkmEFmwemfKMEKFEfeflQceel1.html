@@ -1,47 +1,61 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>كشف أسعار لمعرض أبو رامز</title>
-<style>
-body {font-family: Arial; margin: 40px; padding:20px;}
-h1{text-align:center;}
-.search-box {margin-bottom: 20px; text-align:center;}
-input[type="text"] {padding:8px; font-size:16px; margin:5px;}
-button {padding:8px 12px; font-size:16px; cursor:pointer; margin:5px;}
-mark {background-color: yellow;}
-table {border-collapse: collapse; width: 100%; margin-top: 20px;}
-th, td {border:1px solid #333; padding:8px; text-align: right;}
-th {background-color:#f2f2f2;}
-.hidden {display:none;}
-#resultCount{text-align:center; margin-top:10px; font-weight:bold; color:#444;}
-#invoiceSection {margin-top:40px; border-top:3px solid #1D70B8; padding-top:20px;}
-#invoiceSection h2{text-align:center; color:#1D70B8;}
-#totalPrice{font-weight:bold; color:#1D70B8; margin-top:10px;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>كشف أسعار لمعرض أبو رامز</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    .search-box { margin-bottom: 20px; text-align: center; }
+    input[type="text"] { padding: 8px; font-size: 16px; margin: 5px; }
+    button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
+    mark { background-color: yellow; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: right; }
+    th { background-color: #f2f2f2; }
+    .hidden { display: none; }
+    #resultCount {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
 
-<h1>كشف أسعار لمعرض أبو رامز</h1>
+  <h1>كشف أسعار لمعرض أبو رامز</h1>
 
-<div class="search-box">
-  <input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍">
-  <button id="searchBtn">بحث</button>
-  <button id="clearBtn">مسح ✖️</button>
-</div>
+  <div class="search-box">
+   <p> <input type="text" id="searchInput" placeholder="   اكبس هون وسوي بحث 🔍 ">
+   </p> <button id="searchBtn">بحث</button>
+   <button id="clearBtn">مسح ✖️</button>
+  <p>  <div style="
+  background-color: #1D70B8; /* اللون الأصفر */
+  color: white;               /* لون النص أسود */
+  padding: 5px 15px;         /* مساحة صغيرة حول النص */
+  border-radius: 5px;        /* انحناء الزوايا */
+  display: inline-block;     /* يجعل المستطيل يضبط حجمه حسب النص */
+  font-family: Arial, sans-serif;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2); /* ظل خفيف */
+">
+  <h4 style="margin: 0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
+</div></p>
+  </div>
 
-<div id="resultCount"></div>
+  <div id="resultCount"></div>
 
-<table id="priceTable">
-<thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
-</thead>
-<tbody>
-
+  <div id="content">
+    <table id="priceTable">
+      <thead>
+        <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
+      </thead>
+      <tbody>
         <td>I00000001</td>
         <td>غسالة ال جي 10.5 كيلو سلفر LG V3</td>
         <td>2,520.00</td>
@@ -5416,118 +5430,76 @@ th {background-color:#f2f2f2;}
         <td>شفاط لورنس 90 سم زجاج اسود مائل ديجيتال اشارة </td>
         <td>670.00</td>
     </tr>  
- </tbody>
-</table>
+  </tbody>
+    </table>
+  </div>
 
-<div style="text-align:center; margin-top:20px;">
-  <button id="createInvoiceBtn" style="background-color:#1D70B8;color:white;border:none;border-radius:6px;padding:10px 20px;">🧾 إنشاء فاتورة</button>
-</div>
-
-<div id="invoiceSection" class="hidden">
-<h2>فاتورة المبيعات</h2>
-<table id="invoiceTable">
-<thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>إجراء</th></tr>
-</thead>
-<tbody></tbody>
-</table>
-<div id="totalPrice">الإجمالي: 0 ₪</div>
-</div>
-
-<script>
-const searchInput = document.getElementById("searchInput");
-const searchBtn = document.getElementById("searchBtn");
-const clearBtn = document.getElementById("clearBtn");
-const resultCount = document.getElementById("resultCount");
-const createInvoiceBtn = document.getElementById("createInvoiceBtn");
-const invoiceSection = document.getElementById("invoiceSection");
-const invoiceTableBody = document.querySelector("#invoiceTable tbody");
-const totalPriceDisplay = document.getElementById("totalPrice");
-
-let total = 0;
-
-// إظهار/إخفاء الفاتورة
-createInvoiceBtn.addEventListener("click", ()=>{
-  invoiceSection.classList.toggle("hidden");
-});
-
-// البحث عن الأصناف
-searchBtn.addEventListener("click", ()=>{
-  const value = searchInput.value.trim().toLowerCase();
-  let count = 0;
-  document.querySelectorAll("#priceTable tbody tr").forEach(row=>{
-    const text = row.textContent.toLowerCase();
-    if(text.includes(value) && value !== ""){
-      row.style.display="";
-      count++;
-    } else {
-      row.style.display="none";
+  <script>
+    // 🔹 إزالة أي تظليل
+    function clearHighlights() {
+      document.querySelectorAll('#priceTable td').forEach(td => {
+        td.innerHTML = td.textContent;
+      });
     }
-  });
-  resultCount.textContent = count ? "عدد النتائج: "+count : "لا توجد نتائج";
-});
 
-// مسح البحث
-clearBtn.addEventListener("click", ()=>{
-  searchInput.value="";
-  document.querySelectorAll("#priceTable tbody tr").forEach(row=>row.style.display="");
-  resultCount.textContent="";
-});
+    // 🔹 بحث ذكي مرن
+    function smartSearch() {
+      const input = document.getElementById('searchInput').value.trim().toLowerCase();
+      const rows = Array.from(document.querySelectorAll('#priceTable tbody tr'));
+      let matches = 0;
 
-// إضافة زر "➕ أضف" لكل صف
-document.querySelectorAll("#priceTable tbody tr").forEach(row=>{
-  const addBtn = document.createElement("button");
-  addBtn.textContent="➕ أضف";
-  addBtn.style.backgroundColor="#4CAF50";
-  addBtn.style.color="white";
-  addBtn.style.border="none";
-  addBtn.style.borderRadius="4px";
+      clearHighlights();
 
-  const cell = document.createElement("td");
-  cell.appendChild(addBtn);
-  row.appendChild(cell);
+      if (input === '') {
+        rows.forEach(row => row.classList.remove('hidden'));
+        document.getElementById('resultCount').textContent = '';
+        return;
+      }
 
-  addBtn.addEventListener("click",()=>{
-    const cells = row.querySelectorAll("td");
-    const id = cells[0].textContent;
-    const name = cells[1].textContent;
-    let text = cells[2].textContent.trim();
+      const words = input.split(/\s+/);
 
-    // إزالة فواصل الآلاف (,) ونقاط عربية
-    text = text.replace(/[.,]/g,'');
-    const price = parseFloat(text) || 0;
+      rows.forEach(row => {
+        const rowText = Array.from(row.querySelectorAll('td'))
+                             .map(td => td.textContent.toLowerCase())
+                             .join(' ');
+        const isMatch = words.every(word => rowText.includes(word));
 
-    addToInvoice(id,name,price);
-  });
-});
+        if (isMatch) {
+          row.classList.remove('hidden');
+          // تظليل كل كلمة في أي خلية
+          row.querySelectorAll('td').forEach(td => {
+            words.forEach(word => {
+              const regex = new RegExp(`(${word})`, 'gi');
+              td.innerHTML = td.innerHTML.replace(regex, '<mark>$1</mark>');
+            });
+          });
+          matches++;
+        } else {
+          row.classList.add('hidden');
+        }
+      });
 
-// إضافة صنف للفاتورة
-function addToInvoice(id,name,price){
-  const newRow = document.createElement("tr");
-  newRow.innerHTML = `
-    <td>${id}</td>
-    <td>${name}</td>
-    <td>${price.toLocaleString('en-US')} ₪</td>
-    <td><button class="deleteBtn" style="background-color:#f44336;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;">🗑️ حذف</button></td>
-  `;
-  invoiceTableBody.appendChild(newRow);
-  total += price;
-  totalPriceDisplay.textContent = "الإجمالي: "+total.toLocaleString('en-US')+" ₪";
+      document.getElementById('resultCount').textContent = matches > 0
+        ? `عدد النتائج: ${matches}`
+        : 'لا توجد نتائج مطابقة 😕';
+    }
 
-  newRow.querySelector(".deleteBtn").addEventListener("click",()=>{
-    invoiceTableBody.removeChild(newRow);
-    total -= price;
-    totalPriceDisplay.textContent = "الإجمالي: "+total.toLocaleString('en-US')+" ₪";
-  });
-}
-</script>
+    // 🔹 تفعيل البحث أثناء الكتابة والزر
+    document.getElementById('searchInput').addEventListener('input', smartSearch);
+    document.getElementById('searchBtn').addEventListener('click', smartSearch);
+
+    // 🔹 زر مسح البحث
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      smartSearch();
+    });
+  </script>
 
 </body>
 </html>
 
 
 
-  
 
 
 
