@@ -57,6 +57,7 @@ th { background-color:#f2f2f2; }
 }
 
 #total {
+  display: none;               /* نخفيه في البداية */
   background-color: #850000;  
   color: white;                
   font-weight: bold;
@@ -143,6 +144,7 @@ createInvoiceBtn.addEventListener('click', async () => {
       invoiceContainer.appendChild(invoiceTable);
       invoiceContainer.style.display = 'block';
       invoiceSummaryContainer.style.display = 'block';
+      totalDiv.style.display = 'block';   // إظهار الإجمالي
 
       setupInvoiceFunctions();
 
@@ -152,6 +154,7 @@ createInvoiceBtn.addEventListener('click', async () => {
   } else {
     invoiceContainer.style.display = 'block';
     invoiceSummaryContainer.style.display = 'block';
+    totalDiv.style.display = 'block';
   }
 });
 
