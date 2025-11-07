@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إنشاء فاتورة</title>
 <style>
-body { font-family: Arial; margin: 40px; padding: 20px; }
-h1 { text-align:center; }
+body { font-family: Arial; margin:0; padding:0; }
+h1,h2 { margin:0; }
 button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
 #invoiceContainer { display:none; margin-top:20px; }
 #invoiceSummaryContainer { display:none; margin-top:20px; }
@@ -16,20 +16,25 @@ button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
 table { border-collapse: collapse; width:100%; margin-top:10px; }
 th, td { border:1px solid #333; padding:8px; text-align:right; }
 th { background-color:#f2f2f2; }
+button { min-width:180px; }
 </style>
 </head>
 <body>
 
-<h1>إنشاء فاتورة</h1>
+<!-- مستطيل عنوان الفاتورة -->
+<div style="background-color:#1D70B8; color:white; text-align:center; padding:15px 0; margin-bottom:20px;">
+  <h1>إنشاء فاتورة 💰</h1>
+</div>
 
-<!-- زر الانتقال إلى صفحة المنتجات -->
-<button id="goProductsBtn">اذهب إلى صفحة المنتجات</button>
-<!-- زر إنشاء الفاتورة -->
-<button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
+<!-- أزرار الانتقال وإنشاء الفاتورة -->
+<div style="text-align:center; margin-bottom:30px;">
+  <button id="goProductsBtn" style="display:block; margin:10px auto;">اذهب إلى صفحة المنتجات</button>
+  <button id="createInvoiceBtn" style="display:block; margin:10px auto;">إنشاء فاتورة جديدة 💰</button>
+</div>
 
 <!-- جدول المنتجات المضافة للفاتورة -->
 <div id="invoiceSummaryContainer">
-  <h2>المنتجات المضافة للفاتورة</h2>
+  <h2 style="text-align:center;">المنتجات المضافة للفاتورة</h2>
   <table id="invoiceSummaryTable" style="width:100%; border-collapse: collapse;">
     <thead>
       <tr>
@@ -92,7 +97,7 @@ createInvoiceBtn.addEventListener('click', async () => {
       setupInvoiceFunctions();
 
     } catch(err) {
-      invoiceContainer.innerHTML = `<p style="color:red;">حدث خطأ أثناء جلب الصفحة: ${err.message}</p>`;
+      invoiceContainer.innerHTML = `<p style="color:red; text-align:center;">حدث خطأ أثناء جلب الصفحة: ${err.message}</p>`;
     }
   } else {
     invoiceContainer.style.display = 'block';
@@ -135,8 +140,12 @@ function setupInvoiceFunctions(){
   // --- إعداد البحث ---
   const searchInput = document.createElement('input');
   searchInput.type='text'; searchInput.placeholder='ابحث عن الصنف 🔍';
+  searchInput.style.display='block';
+  searchInput.style.margin='10px auto';
+  searchInput.style.width='60%';
   invoiceContainer.prepend(searchInput);
   const resultCount = document.createElement('div'); resultCount.id='resultCount';
+  resultCount.style.textAlign='center';
   invoiceContainer.prepend(resultCount);
 
   // حفظ نصوص الصفوف مسبقاً
