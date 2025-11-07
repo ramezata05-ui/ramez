@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إنشاء الفاتورة</title>
+<title>إنشاء فاتورة</title>
 <style>
 body { font-family: Arial; margin: 40px; padding: 20px; }
 h1 { text-align:center; }
@@ -20,15 +20,14 @@ th { background-color:#f2f2f2; }
 </head>
 <body>
 
-<h1>إنشاء الفاتورة</h1>
+<h1>إنشاء فاتورة</h1>
+
+<!-- زر الانتقال إلى صفحة المنتجات -->
+<button id="goProductsBtn">اذهب إلى صفحة المنتجات</button>
+<!-- زر إنشاء الفاتورة -->
 <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
 
-  <button onclick="window.location.href='https://ramezatatra9.github.io/ramez/product.html'">
-  انتقل لصفحة المنتجات
-</button>
-
-  
-<!-- جدول المنتجات المضافة للفاتورة يظهر أولاً -->
+<!-- جدول المنتجات المضافة للفاتورة -->
 <div id="invoiceSummaryContainer">
   <h2>المنتجات المضافة للفاتورة</h2>
   <table id="invoiceSummaryTable" style="width:100%; border-collapse: collapse;">
@@ -51,12 +50,18 @@ th { background-color:#f2f2f2; }
 
 <script>
 const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+const goProductsBtn = document.getElementById('goProductsBtn');
 const invoiceContainer = document.getElementById('invoiceContainer');
 const invoiceSummaryContainer = document.getElementById('invoiceSummaryContainer');
 const invoiceSummaryTable = document.getElementById('invoiceSummaryTable').querySelector('tbody');
 const totalDiv = document.getElementById('total');
 let invoiceTable;
 let precomputedText = [];
+
+// --- زر الانتقال للمنتجات ---
+goProductsBtn.addEventListener('click', () => {
+  window.location.href = 'https://ramezatatra9.github.io/ramez/product.html';
+});
 
 // --- دالة debounce لتأخير البحث ---
 function debounce(func, delay) {
@@ -71,7 +76,7 @@ function debounce(func, delay) {
 createInvoiceBtn.addEventListener('click', async () => {
   if(invoiceContainer.innerHTML.trim() === '') {
     try {
-      const response = await fetch('product.html');
+      const response = await fetch('https://ramezatatra9.github.io/ramez/product.html');
       if(!response.ok) throw new Error('تعذر جلب صفحة المنتجات');
       const html = await response.text();
 
