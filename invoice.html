@@ -1,127 +1,123 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>صفحة المنتجات والفاتورة</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كشف أسعار لمعرض أبو رامز</title>
 <style>
 body { font-family: Arial; margin: 40px; padding: 20px; }
-h1 { text-align: center; }
-.search-box { margin-bottom: 20px; text-align: center; }
-input[type="text"] { padding: 8px; font-size: 16px; margin: 5px; }
-button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
+h1 { text-align:center; }
+.search-box { text-align:center; margin-bottom:20px; }
+input[type="text"] { padding:8px; font-size:16px; margin:5px; }
+button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
 mark { background-color: yellow; }
-table { border-collapse: collapse; width: 100%; margin-top: 20px; display: none; }
-th, td { border: 1px solid #333; padding: 8px; text-align: right; }
-th { background-color: #f2f2f2; }
-.hidden { display: none; }
-#resultCount { text-align: center; margin-top: 10px; font-weight: bold; color: #444; }
+table { border-collapse: collapse; width:100%; margin-top:20px; display:none; }
+th, td { border:1px solid #333; padding:8px; text-align:right; }
+th { background-color:#f2f2f2; }
+.hidden { display:none; }
+#resultCount { text-align:center; margin-top:10px; font-weight:bold; color:#444; }
+#invoiceTable th, #invoiceTable td { text-align:right; }
+#total { font-weight:bold; margin-top:10px; text-align:right; }
+.qty-input { width:40px; text-align:center; }
 </style>
 </head>
 <body>
 
-<h1>صفحة المنتجات والفاتورة</h1>
+<h1>كشف أسعار لمعرض أبو رامز</h1>
 
 <div class="search-box">
-  <input type="text" id="searchInput" placeholder="ابحث عن منتج...">
-  <button id="searchBtn">بحث</button>
-  <button id="clearBtn">مسح ✖️</button>
-  <button onclick="window.open('https://ramezatatra9.github.io/ramez/invoice.html', '_blank')">
-    إنشاء فاتورة
-  </button>
+<input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍" disabled>
+<div>
+  <button id="searchBtn" disabled>بحث</button>
+  <button id="clearBtn" disabled>مسح ✖️</button>
 </div>
+<div style="text-align:center; margin-bottom:20px;">
+  <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
+</div>
+  
+<div id="invoiceSection" style="display:none;">
+<h2 style="text-align:center;">الفاتورة</h2>
+<table id="invoiceTable">
+<thead>
+<tr><th>الصنف</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th><th>إجراء</th></tr>
+</thead>
+<tbody></tbody>
+</table>
+<div id="total">الإجمالي: 0</div>
+</div>
+  
+<p>
+<div style="background-color:#1D70B8;color:white;padding:5px 15px;border-radius:5px;display:inline-block;box-shadow:1px 1px 4px rgba(0,0,0,0.2);">
+<h4 style="margin:0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
+</div>
+</p>
 
 <div id="resultCount"></div>
 
+<div id="content">
 <table id="priceTable">
 <thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>إضافة للفاتورة</th></tr>
+<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>الكمية</th><th>إجراء</th></tr>
 </thead>
 <tbody>
-<tr><td>I00000001</td><td>غسالة ال جي 10.5 كيلو سلفر LG V3</td><td>2520</td><td></td></tr>
-<tr><td>I00000002</td><td>غسالة ال جي 9 كيلو V4</td><td>2230</td><td></td></tr>
-<tr><td>I00000003</td><td>غسالة هير 10 كيلو سلفر HW100-B14636NS3</td><td>1900</td><td></td></tr>
-<tr><td>I00000004</td><td>غسالة هير 10 كيلو دايركت درايف HW120</td><td>2100</td><td></td></tr>
+    <tr>
+        <td>I00000001</td>
+        <td>غسالة ال جي 10.5 كيلو سلفر LG V3</td>
+        <td>2520</td>
+    </tr>
+    <tr>
+        <td>I00000002</td>
+        <td>غسالة ال جي 9 كيلو V4</td>
+        <td>2230</td>
+    </tr>
+    <tr>
+        <td>I00000003</td>
+        <td>غسالة هير 10 كيلو سلفر دايركت موشن HW100-B14636NS3</td>
+        <td>1900</td>
+    </tr>
+    <tr>
+        <td>I00000004</td>
+        <td>غسالة هير 10 كيلو دايركت درايف HW120</td>
+        <td>2100</td>
+    </tr>
+    <tr>
+        <td>I00000005</td>
+        <td>غسالة جينرال لوكس 5 كيلو اسود GLX-682B</td>
+        <td>840</td>
+    </tr>
+    <tr>
+        <td>I00000006</td>
+        <td>غسالة منجر هوم 9 كيلو سلفر</td>
+        <td>1250</td>
+    </tr>
 </tbody>
 </table>
+</div>
 
 <script>
-// 🔹 إزالة أي تظليل
-function clearHighlights() {
-  document.querySelectorAll('#priceTable td').forEach(td => td.innerHTML = td.textContent);
-}
+const invoiceSection = document.getElementById('invoiceSection');
+const invoiceTable = document.getElementById('invoiceTable').querySelector('tbody');
+const totalDiv = document.getElementById('total');
+const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const clearBtn = document.getElementById('clearBtn');
+const resultCount = document.getElementById('resultCount');
+const priceTable = document.getElementById('priceTable');
+const priceTbody = priceTable.querySelector('tbody');
 
-// 🔹 البحث الذكي
-function smartSearch() {
-  const input = document.getElementById('searchInput').value.trim().toLowerCase();
-  const rows = Array.from(document.querySelectorAll('#priceTable tbody tr'));
-  let matches = 0;
-
-  clearHighlights();
-
-  if(input === '') {
-    rows.forEach(row => row.classList.add('hidden'));
-    document.getElementById('priceTable').style.display = 'none';
-    document.getElementById('resultCount').textContent = '';
-    return;
-  }
-
-  const words = input.split(/\s+/);
-
-  rows.forEach(row => {
-    const rowText = Array.from(row.querySelectorAll('td')).map(td => td.textContent.toLowerCase()).join(' ');
-    const isMatch = words.every(word => rowText.includes(word));
-
-    if(isMatch) {
-      row.classList.remove('hidden');
-      row.querySelectorAll('td').forEach(td => {
-        words.forEach(word => {
-          const regex = new RegExp(`(${word})`, 'gi');
-          td.innerHTML = td.innerHTML.replace(regex, '<mark>$1</mark>');
-        });
-      });
-      matches++;
-    } else {
-      row.classList.add('hidden');
-    }
-  });
-
-  document.getElementById('priceTable').style.display = matches > 0 ? 'table' : 'none';
-  document.getElementById('resultCount').textContent = matches > 0 ? `عدد النتائج: ${matches}` : 'لا توجد نتائج مطابقة 😕';
-}
-
-// 🔹 إضافة زر "إضافة للفاتورة" لكل صف (يخزن المنتج في LocalStorage)
-function addInvoiceButtons() {
-  const rows = document.querySelectorAll('#priceTable tbody tr');
-  rows.forEach(row => {
-    const td = row.cells[3];
-    const id = row.cells[0].textContent;
-    const name = row.cells[1].textContent;
-    const price = parseFloat(row.cells[2].textContent.replace(/,/g, ''));
-
-    const btn = document.createElement('button');
-    btn.textContent = 'إضافة للفاتورة';
-    btn.onclick = () => {
-      let invoice = JSON.parse(localStorage.getItem('invoice') || '[]');
-      invoice.push({id, name, price});
-      localStorage.setItem('invoice', JSON.stringify(invoice));
-      alert(`${name} تم إضافته للفاتورة`);
-    };
-    td.appendChild(btn);
-  });
-}
-
-// 🔹 تفعيل البحث والزر
-document.getElementById('searchInput').addEventListener('input', smartSearch);
-document.getElementById('searchBtn').addEventListener('click', smartSearch);
-document.getElementById('clearBtn').addEventListener('click', () => {
-  document.getElementById('searchInput').value = '';
-  smartSearch();
+// تفعيل الفاتورة وتمكين البحث عند الضغط على زر الإنشاء
+createInvoiceBtn.addEventListener('click', () => {
+  invoiceSection.style.display = 'block';
+  searchInput.disabled = false;
+  searchBtn.disabled = false;
+  clearBtn.disabled = false;
 });
 
-// 🔹 إنشاء أزرار "إضافة للفاتورة" عند تحميل الصفحة
-window.onload = addInvoiceButtons;
-</script>
-
-</body>
-</html>
+// تحديث الإجمالي
+function updateTotal() {
+  let sum = 0;
+  Array.from(invoiceTable.rows).forEach(row => {
+    const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
+    const qty = parseInt(row.cells[2].innerText) || 0;
+    row.cell
