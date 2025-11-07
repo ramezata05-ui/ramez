@@ -3,41 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>كشف أسعار لمعرض أبو رامز</title>
+<title>إنشاء فاتورة</title>
 <style>
 body { font-family: Arial; margin: 40px; padding: 20px; }
 h1 { text-align:center; }
-.search-box { text-align:center; margin-bottom:20px; }
-input[type="text"] { padding:8px; font-size:16px; margin:5px; }
 button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
-mark { background-color: yellow; }
-table { border-collapse: collapse; width:100%; margin-top:20px; display:none; }
-th, td { border:1px solid #333; padding:8px; text-align:right; }
-th { background-color:#f2f2f2; }
-.hidden { display:none; }
+#invoiceContainer { display:none; margin-top:20px; }
 #resultCount { text-align:center; margin-top:10px; font-weight:bold; color:#444; }
-#invoiceTable th, #invoiceTable td { text-align:right; }
-#total { font-weight:bold; margin-top:10px; text-align:right; }
 .qty-input { width:40px; text-align:center; }
-.qtyCol, .actionCol { display:none; }
 </style>
 </head>
 <body>
 
-<h1>كشف أسعار لمعرض أبو رامز</h1>
+<h1>إنشاء فاتورة</h1>
 
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍" disabled>
-<div>
-  <button id="searchBtn" disabled>بحث</button>
-  <button id="clearBtn" disabled>مسح ✖️</button>
-</div>
-<div style="text-align:center; margin-bottom:20px;">
-  <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
-</div>
+<button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
 
-<div id="invoiceSection" style="display:none;">
-<h2 style="text-align:center;">الفاتورة</h2>
-<table id="invoiceTable">
-<thead>
-<tr><th>الصنف</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th><th>إجراء</th></tr>
+<div id="invoiceContainer"></div>
+
+<div id="total" style="font-weight:bold; margin-top:10px; text-align:right;"></div>
+
+<script>
+const createInvoiceBtn = document.getElementById('createInvoiceBtn');
+const invoiceContainer = document.getElementById('invoiceContainer');
+const totalDiv = document.getElementById('total');
+
+let invoiceTable; // سيتم تخزين جدول المنتجات بعد الجلب
+
+// عند الضغط على زر إنشاء الفاتورة
+createInvoiceBtn.addEventListener('click', async () => {
+  if(invoiceContainer.innerHTML.trim() === '') {
+    try {
+      const response = await fetch('product.html'); // جلب صفحة المنتجات
+      if(!response.ok) throw new Error('تعذر جلب صفحة المنتجات');
+      const html = await response.text();
+
+      // نضع html في div مؤقت لاستخراج الجدول فقط
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      invoiceTable = tempDiv.querySelector('#priceTable');
+      
+      if(!invoiceTable) throw new Error('الجدول غير موجود في product.html');
+
+      // إدراج الجدول في صفحة الفاتورة
+      invoiceContainer.appendChild(invoiceTable);
+      invoiceContainer.style.display = 'block';
+
+      // تفعيل كل أزرار الكمية والإضافة والبحث
+      setupInvoiceFunctions();
+
+    } catch(err) {
+      invoiceContainer.innerHTML = `<p style="color:red;">حدث خطأ أثناء جلب الصفحة: ${err.message}</p>`;
+    }
+  } else {
+    invoiceContainer.style.display = 'block';
+  }
+});
+
+// --- تفعيل البحث الذكي وأزرار الكمية والإضافة ---
+function setupInvoiceFunctions() {
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.placeholder = 'ابحث عن الصنف 🔍';
+  searchInput.style.marginBottom = '10px';
+  invoiceContainer.prepend(searchInput);
+
+  const resultCount = document.createElement('div');
+  resultCount.id = 'resultCount';
+  invoiceContainer.prepend(resultCount);
+
+  const invoiceBody = invoiceTable.querySelector('tbody');
+
+  // إضافة أزرار الكمية والإجراء لكل صف
+  Array.from(invoiceBody.rows).forEach(row => {
+    // إضافة عمود الكمية إذا لم يكن موجود
+    if(!row.querySelector('.qty-input')){
+      const qtyCell = row.insertCell(-1);
+      const minusBtn = document.createElement('button');
+      minusBtn.innerText = '-';
+      const qtyInput = document.createElement('input');
+      qtyInput.type = 'text';
+      qtyInput.value = '1';
+      qtyInput.readOnly = true;
+      qtyInput.classList.add('qty-input');
+      const plusBtn = document.createElement('button');
+      plusBtn.innerText = '+';
+      qtyCell.appendChild(minusBtn);
+      qtyCell.appendChild(qtyInput);
+      qtyCell.appendChild(plusBtn);
+
+      minusBtn.addEventListener('click', ()=> { if(parseInt(qtyInput.value)>1) qtyInput.value--; });
+      plusBtn.addEventListener('click', ()=> { qtyInput.value = parseInt(qtyInput.value)+1; });
+    }
+
+    // إضافة زر الإضافة إذا لم يكن موجود
+    if(!row.querySelector('.addBtn')){
+      const addCell = row.insertCell(-1);
+      const btn = document.createElement('button');
+      btn.innerText = 'إضافة للفاتورة';
+      btn.classList.add('addBtn');
+      addCell.appendChild(btn);
+      btn.addEventListener('click', ()=>{
+        const name = row.cells[1].innerText;
+        const price = parseFloat(row.cells[2].innerText.replace(/,/g,'')) || 0;
+        const qty = parseInt(row.querySelector('.qty-input').value);
+        addToInvoice(name, price, qty);
+      });
+    }
+  });
+
+  // تفعيل البحث
+  searchInput.addEventListener('input', ()=> smartSearch(searchInput, resultCount));
+}
+
+// --- البحث الذكي ---
+function smartSearch(inputEl, resultCountEl){
+  const input = inputEl.value.trim().toLowerCase();
+  const rows = Array.from(invoiceTable.querySelectorAll('tbody tr'));
+  let matches = 0;
+  rows.forEach(row=>{
+    const rowText = Array.from(row.cells).map(td=>td.innerText.toLowerCase()).join(' ');
+    if(input === '' || input.split(/\s+/).every(word=>rowText.includes(word))){
+      row.style.display = '';
+      matches++;
+    } else row.style.display = 'none';
+  });
+  resultCountEl.innerText = matches>0?`عدد النتائج: ${matches}`:'لا توجد نتائج مطابقة 😕';
+}
+
+// --- إضافة للفاتورة ---
+function addToInvoice(name, price, qty){
+  let invoiceSummary = document.getElementById('invoiceSummary');
+  if(!invoiceSummary){
+    invoiceSummary = document.createElement('table');
+    invoiceSummary.id = 'invoiceSummary';
+    invoiceSummary.style.width = '100%';
+    invoiceSummary.style.borderCollapse = 'collapse';
+    invoiceSummary.innerHTML = `<thead><tr>
+      <th>الصنف</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th>
+    </tr></thead><tbody></tbody>`;
+    invoiceContainer.appendChild(invoiceSummary);
+  }
+  const tbody = invoiceSummary.querySelector('tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${name}</td><td>${price}</td><td>${qty}</td><td>${(price*qty).toLocaleString()}</td>`;
+  tbody.appendChild(tr);
+
+  // تحديث الإجمالي
+  let total = 0;
+  Array.from(tbody.rows).forEach(r=>{
+    total += parseFloat(r.cells[3].innerText.replace(/,/g,''));
+  });
+  totalDiv.innerText = `الإجمالي: ${total.toLocaleString()}`;
+}
+</script>
+
+</body>
+</html>
