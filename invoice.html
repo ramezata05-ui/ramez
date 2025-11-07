@@ -5,19 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إنشاء فاتورة</title>
 <style>
-body { font-family: Arial; margin:0; padding:0; }
-h1,h2 { margin:0; }
-button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
-#invoiceContainer { display:none; margin-top:20px; }
-#invoiceSummaryContainer { display:none; margin-top:20px; }
-#total { font-weight:bold; margin-top:10px; text-align:right; }
-.qty-input { width:40px; text-align:center; }
-#resultCount { text-align:center; margin-top:10px; font-weight:bold; color:#444; }
-table { border-collapse: collapse; width:100%; margin-top:10px; }
-th, td { border:1px solid #333; padding:8px; text-align:right; }
-th { background-color:#f2f2f2; }
+body { 
+  font-family: Arial; 
+  margin: 40px 80px; /* زيادة المسافة من الأعلى والأسفل 40px ومن اليمين واليسار 80px */
+  padding: 20px; 
+  box-sizing: border-box; /* لضمان عدم تجاوز المحتوى للمساحة */
+}
+#invoiceContainer, #invoiceSummaryContainer {
+  margin-left: auto;
+  margin-right: auto; /* لجعلها مركزة أفقياً */
+  max-width: 1200px; /* عرض أقصى للواجهة */
+}
 button { min-width:180px; }
+table { border-collapse: collapse; width:100%; max-width:100%; }
 </style>
+
 </head>
 <body>
 
