@@ -7,7 +7,7 @@
 <style>
 body { 
   font-family: Arial; 
-  margin: 40px 80px; /* مسافة من الأعلى/الأسفل 40px ومن اليمين/اليسار 80px */
+  margin: 40px 80px; 
   padding: 0; 
   box-sizing: border-box; 
   background-color: #f9f9f9;
@@ -16,18 +16,30 @@ body {
 h1,h2 { margin:0; }
 
 button { 
-  padding:8px 12px; 
-  font-size:16px; 
+  padding:6px 10px;       
+  font-size:14px;         
   cursor:pointer; 
-  margin:10px auto; 
+  margin:5px auto;        
   display:block; 
-  min-width:180px;
+  min-width:140px;        
+  border-radius:5px;      
 }
 
 #invoiceContainer { display:none; margin-top:20px; }
 #invoiceSummaryContainer { display:none; margin-top:20px; }
-#total { font-weight:bold; margin-top:10px; text-align:right; }
-.qty-input { width:40px; text-align:center; }
+
+.qty-input {
+  width:30px;       
+  text-align:center;
+  font-size:14px;
+}
+
+.qty-input + button, .qty-input ~ button {
+  padding:4px 6px;  
+  font-size:14px;
+  min-width:30px;   
+}
+
 #resultCount { text-align:center; margin-top:10px; font-weight:bold; color:#444; }
 
 table { border-collapse: collapse; width:100%; margin-top:10px; }
@@ -42,6 +54,18 @@ th { background-color:#f2f2f2; }
   margin-bottom:20px; 
   border-radius:8px;
   width:100%;
+}
+
+#total {
+  background-color: #850000;  
+  color: white;                
+  font-weight: bold;
+  padding: 10px 20px;          
+  text-align: center;          
+  margin: 20px auto;            
+  width: fit-content;           
+  border-radius: 8px;           
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.3); 
 }
 </style>
 </head>
@@ -74,7 +98,7 @@ th { background-color:#f2f2f2; }
     <tbody></tbody>
   </table>
 </div>
-<div id="total"></div>
+<div id="total">الإجمالي: 0</div>
 
 <!-- جدول المنتجات للبحث والإضافة -->
 <div id="invoiceContainer"></div>
@@ -136,7 +160,6 @@ function setupInvoiceFunctions(){
   const invoiceBody = invoiceTable.querySelector('tbody');
   const rows = Array.from(invoiceBody.rows);
 
-  // إنشاء أعمدة الكمية وزر الإضافة مرة واحدة
   rows.forEach(row=>{
     if(!row.querySelector('.qty-input')){
       const qtyCell = row.insertCell(-1);
@@ -163,7 +186,6 @@ function setupInvoiceFunctions(){
     }
   });
 
-  // --- إعداد البحث ---
   const searchInput = document.createElement('input');
   searchInput.type='text'; searchInput.placeholder='ابحث عن الصنف 🔍';
   searchInput.style.display='block';
@@ -174,10 +196,8 @@ function setupInvoiceFunctions(){
   resultCount.style.textAlign='center';
   invoiceContainer.prepend(resultCount);
 
-  // حفظ نصوص الصفوف مسبقاً
   precomputedText = rows.map(row=>Array.from(row.cells).map(td=>td.innerText.toLowerCase()).join(' '));
 
-  // البحث السريع مع debounce
   searchInput.addEventListener('input', debounce(()=>{
     let matches = 0;
     rows.forEach((row,i)=>{
@@ -196,7 +216,6 @@ function addToInvoice(name, price, qty){
                   <td><button class="removeBtn">حذف</button></td>`;
   invoiceSummaryTable.appendChild(tr);
 
-  // تفعيل زر الحذف
   tr.querySelector('.removeBtn').addEventListener('click', ()=>{
     tr.remove();
     updateTotal();
