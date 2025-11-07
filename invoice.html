@@ -23,8 +23,7 @@ th { background-color:#f2f2f2; }
 <h1>إنشاء فاتورة</h1>
 <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
 
-<div id="invoiceContainer"></div>
-
+<!-- جدول المنتجات المضافة للفاتورة يظهر أولاً -->
 <div id="invoiceSummaryContainer">
   <h2>المنتجات المضافة للفاتورة</h2>
   <table id="invoiceSummaryTable" style="width:100%; border-collapse: collapse;">
@@ -40,8 +39,10 @@ th { background-color:#f2f2f2; }
     <tbody></tbody>
   </table>
 </div>
-
 <div id="total"></div>
+
+<!-- جدول المنتجات للبحث والإضافة -->
+<div id="invoiceContainer"></div>
 
 <script>
 const createInvoiceBtn = document.getElementById('createInvoiceBtn');
