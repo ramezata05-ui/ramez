@@ -11,7 +11,7 @@ h1 { text-align:center; }
 input[type="text"] { padding:8px; font-size:16px; margin:5px; }
 button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
 mark { background-color: yellow; }
-table { border-collapse: collapse; width:100%; margin-top:20px; }
+table { border-collapse: collapse; width:100%; margin-top:20px; display:none; }
 th, td { border:1px solid #333; padding:8px; text-align:right; }
 th { background-color:#f2f2f2; }
 .hidden { display:none; }
@@ -19,6 +19,7 @@ th { background-color:#f2f2f2; }
 #invoiceTable th, #invoiceTable td { text-align:right; }
 #total { font-weight:bold; margin-top:10px; text-align:right; }
 .qty-input { width:40px; text-align:center; }
+.qtyCol, .actionCol { display:none; } /* أعمدة الكمية والإجراء مخفية افتراضياً */
 </style>
 </head>
 <body>
@@ -57,7 +58,13 @@ th { background-color:#f2f2f2; }
 <div id="content">
 <table id="priceTable">
 <thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>الكمية</th><th>إجراء</th></tr>
+<tr>
+<th>رقم الصنف</th>
+<th>الصنف</th>
+<th>السعر</th>
+<th class="qtyCol">الكمية</th>
+<th class="actionCol">إجراء</th>
+</tr>
 </thead>
 <tbody>
 <tr><td>I00000001</td><td>غسالة ال جي 10.5 كيلو سلفر LG V3</td><td>2520</td></tr>
@@ -82,14 +89,61 @@ const resultCount = document.getElementById('resultCount');
 const priceTable = document.getElementById('priceTable');
 const priceTbody = priceTable.querySelector('tbody');
 
-// تفعيل الفاتورة وتمكين البحث عند الضغط على زر الإنشاء
+// تفعيل الفاتورة وتمكين البحث وعرض الجدول وأعمدة الكمية والإجراء عند الضغط على زر الإنشاء
 createInvoiceBtn.addEventListener('click', () => {
   invoiceSection.style.display = 'block';
   searchInput.disabled = false;
   searchBtn.disabled = false;
   clearBtn.disabled = false;
   priceTable.style.display = 'table';
-  addQtyAndAddButtons(); // إضافة الكمية وزر الإضافة مرة واحدة عند فتح الفاتورة
+
+  // إظهار أعمدة الكمية والإجراء
+  priceTable.querySelectorAll('.qtyCol').forEach(th => th.style.display = '');
+  priceTable.querySelectorAll('.actionCol').forEach(th => th.style.display = '');
+  
+  Array.from(priceTbody.rows).forEach(row => {
+    // إنشاء عمود الكمية إذا لم يكن موجود
+    if(!row.querySelector('.qty-input')) {
+      const qtyCell = row.insertCell(3);
+      qtyCell.classList.add('qtyCol');
+      const minusBtn = document.createElement('button');
+      minusBtn.innerText = '-';
+      const qtyInput = document.createElement('input');
+      qtyInput.type = 'text';
+      qtyInput.value = '1';
+      qtyInput.readOnly = true;
+      qtyInput.classList.add('qty-input');
+      const plusBtn = document.createElement('button');
+      plusBtn.innerText = '+';
+      qtyCell.appendChild(minusBtn);
+      qtyCell.appendChild(qtyInput);
+      qtyCell.appendChild(plusBtn);
+
+      minusBtn.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value);
+        if(val>1) qtyInput.value = val-1;
+      });
+      plusBtn.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value);
+        qtyInput.value = val+1;
+      });
+    }
+
+    // إنشاء عمود الإجراء إذا لم يكن موجود
+    if(!row.querySelector('.addBtn')) {
+      const addCell = row.insertCell(4);
+      addCell.classList.add('actionCol');
+      const btn = document.createElement('button');
+      btn.innerText = 'إضافة للفاتورة';
+      btn.classList.add('addBtn');
+      addCell.appendChild(btn);
+      btn.addEventListener('click', () => addToInvoice(
+        row.cells[1].innerText,
+        parseFloat(row.cells[2].innerText),
+        parseInt(row.cells[3].querySelector('input').value)
+      ));
+    }
+  });
 });
 
 // تحديث الإجمالي
@@ -117,52 +171,7 @@ function addToInvoice(name, price, qty) {
   });
 }
 
-// إضافة أزرار الكمية وزر الإضافة لكل صف
-function addQtyAndAddButtons() {
-  Array.from(priceTbody.rows).forEach(row => {
-    // إضافة عمود الكمية إذا لم يكن موجود
-    if(!row.querySelector('.qty-input')) {
-      const qtyCell = row.insertCell(3);
-      const minusBtn = document.createElement('button');
-      minusBtn.innerText = '-';
-      const qtyInput = document.createElement('input');
-      qtyInput.type = 'text';
-      qtyInput.value = '1';
-      qtyInput.readOnly = true;
-      qtyInput.classList.add('qty-input');
-      const plusBtn = document.createElement('button');
-      plusBtn.innerText = '+';
-      qtyCell.appendChild(minusBtn);
-      qtyCell.appendChild(qtyInput);
-      qtyCell.appendChild(plusBtn);
-
-      minusBtn.addEventListener('click', () => {
-        let val = parseInt(qtyInput.value);
-        if(val>1) qtyInput.value = val-1;
-      });
-      plusBtn.addEventListener('click', () => {
-        let val = parseInt(qtyInput.value);
-        qtyInput.value = val+1;
-      });
-    }
-
-    // إضافة زر الإضافة إذا لم يكن موجود
-    if(!row.querySelector('.addBtn')) {
-      const addCell = row.insertCell(4);
-      const btn = document.createElement('button');
-      btn.innerText = 'إضافة للفاتورة';
-      btn.classList.add('addBtn');
-      addCell.appendChild(btn);
-      btn.addEventListener('click', () => addToInvoice(
-        row.cells[1].innerText,
-        parseFloat(row.cells[2].innerText),
-        parseInt(row.cells[3].querySelector('input').value)
-      ));
-    }
-  });
-}
-
-// بحث ذكي
+// البحث الذكي
 function smartSearch() {
   const input = searchInput.value.trim().toLowerCase();
   let matches = 0;
