@@ -30,7 +30,18 @@ const createInvoiceBtn = document.getElementById('createInvoiceBtn');
 const invoiceContainer = document.getElementById('invoiceContainer');
 const totalDiv = document.getElementById('total');
 let invoiceTable, invoiceSummary;
+let precomputedText = []; // لتخزين نصوص الصفوف مسبقاً للبحث السريع
 
+// --- دالة debounce لتأخير البحث ---
+function debounce(func, delay) {
+  let timeout;
+  return function(...args){
+    clearTimeout(timeout);
+    timeout = setTimeout(()=> func.apply(this,args), delay);
+  }
+}
+
+// --- إنشاء الفاتورة وجلب الجدول ---
 createInvoiceBtn.addEventListener('click', async () => {
   if(invoiceContainer.innerHTML.trim() === '') {
     try {
@@ -43,11 +54,9 @@ createInvoiceBtn.addEventListener('click', async () => {
       invoiceTable = tempDiv.querySelector('#priceTable');
       if(!invoiceTable) throw new Error('الجدول غير موجود في product.html');
 
-      // أضف الجدول في الصفحة
       invoiceContainer.appendChild(invoiceTable);
       invoiceContainer.style.display = 'block';
 
-      // إعداد أعمدة الكمية والإضافة مرة واحدة فقط
       setupInvoiceFunctions();
 
     } catch(err) {
@@ -58,15 +67,14 @@ createInvoiceBtn.addEventListener('click', async () => {
   }
 });
 
-// --- إعداد أعمدة الكمية والإضافة وأزرار البحث ---
+// --- إعداد وظائف الجدول --- 
 function setupInvoiceFunctions(){
   const invoiceBody = invoiceTable.querySelector('tbody');
-
-  // إنشاء صفوف مؤشرات للبحث
   const rows = Array.from(invoiceBody.rows);
 
-  // أضف أعمدة الكمية والإضافة مرة واحدة لكل صف
+  // إعداد الأعمدة مرة واحدة
   rows.forEach(row=>{
+    // عمود الكمية
     if(!row.querySelector('.qty-input')){
       const qtyCell = row.insertCell(-1);
       const minusBtn = document.createElement('button'); minusBtn.innerText='-';
@@ -79,6 +87,7 @@ function setupInvoiceFunctions(){
       plusBtn.addEventListener('click',()=>{ qtyInput.value = parseInt(qtyInput.value)+1; });
     }
 
+    // عمود الإضافة
     if(!row.querySelector('.addBtn')){
       const addCell = row.insertCell(-1);
       const addBtn = document.createElement('button');
@@ -92,24 +101,26 @@ function setupInvoiceFunctions(){
     }
   });
 
-  // --- إضافة حقل البحث ---
+  // --- إعداد البحث ---
   const searchInput = document.createElement('input');
   searchInput.type='text'; searchInput.placeholder='ابحث عن الصنف 🔍';
   invoiceContainer.prepend(searchInput);
   const resultCount = document.createElement('div'); resultCount.id='resultCount';
   invoiceContainer.prepend(resultCount);
 
-  // البحث
-  searchInput.addEventListener('input', ()=>{
+  // حفظ نصوص الصفوف مسبقاً
+  precomputedText = rows.map(row=>Array.from(row.cells).map(td=>td.innerText.toLowerCase()).join(' '));
+
+  // البحث السريع مع debounce
+  searchInput.addEventListener('input', debounce(()=>{
     let matches = 0;
-    rows.forEach(row=>{
-      const text = Array.from(row.cells).map(td=>td.innerText.toLowerCase()).join(' ');
-      if(searchInput.value.trim() === '' || searchInput.value.toLowerCase().split(/\s+/).every(w=>text.includes(w))){
+    rows.forEach((row,i)=>{
+      if(searchInput.value.trim() === '' || searchInput.value.toLowerCase().split(/\s+/).every(w=>precomputedText[i].includes(w))){
         row.style.display=''; matches++;
       } else row.style.display='none';
     });
     resultCount.innerText = matches>0?`عدد النتائج: ${matches}`:'لا توجد نتائج مطابقة 😕';
-  });
+  }, 200));
 }
 
 // --- إضافة للفاتورة ---
