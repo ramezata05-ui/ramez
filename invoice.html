@@ -11,7 +11,7 @@ h1 { text-align:center; }
 input[type="text"] { padding:8px; font-size:16px; margin:5px; }
 button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
 mark { background-color: yellow; }
-table { border-collapse: collapse; width:100%; margin-top:20px; }
+table { border-collapse: collapse; width:100%; margin-top:20px; display:none; }
 th, td { border:1px solid #333; padding:8px; text-align:right; }
 th { background-color:#f2f2f2; }
 .hidden { display:none; }
@@ -19,6 +19,7 @@ th { background-color:#f2f2f2; }
 #invoiceTable th, #invoiceTable td { text-align:right; }
 #total { font-weight:bold; margin-top:10px; text-align:right; }
 .qty-input { width:40px; text-align:center; }
+.qtyCol, .actionCol { display:none; }
 </style>
 </head>
 <body>
@@ -40,149 +41,3 @@ th { background-color:#f2f2f2; }
 <table id="invoiceTable">
 <thead>
 <tr><th>الصنف</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th><th>إجراء</th></tr>
-</thead>
-<tbody></tbody>
-</table>
-<div id="total">الإجمالي: 0</div>
-</div>
-
-<p>
-<div style="background-color:#1D70B8;color:white;padding:5px 15px;border-radius:5px;display:inline-block;box-shadow:1px 1px 4px rgba(0,0,0,0.2);">
-<h4 style="margin:0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
-</div>
-</p>
-
-<div id="resultCount"></div>
-
-<div id="content">
-<table id="priceTable">
-<thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>الكمية</th><th>إجراء</th></tr>
-</thead>
-<tbody>
-<tr><td>I00000001</td><td>غسالة ال جي 10.5 كيلو سلفر LG V3</td><td>2520</td></tr>
-<tr><td>I00000002</td><td>غسالة ال جي 9 كيلو V4</td><td>2230</td></tr>
-<tr><td>I00000003</td><td>غسالة هير 10 كيلو سلفر دايركت موشن HW100-B14636NS3</td><td>1900</td></tr>
-<tr><td>I00000004</td><td>غسالة هير 10 كيلو دايركت درايف HW120</td><td>2100</td></tr>
-<tr><td>I00000005</td><td>غسالة جينرال لوكس 5 كيلو اسود GLX-682B</td><td>840</td></tr>
-<tr><td>I00000006</td><td>غسالة منجر هوم 9 كيلو سلفر</td><td>1250</td></tr>
-</tbody>
-</table>
-</div>
-
-<script>
-const invoiceSection = document.getElementById('invoiceSection');
-const invoiceTable = document.getElementById('invoiceTable').querySelector('tbody');
-const totalDiv = document.getElementById('total');
-const createInvoiceBtn = document.getElementById('createInvoiceBtn');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const clearBtn = document.getElementById('clearBtn');
-const resultCount = document.getElementById('resultCount');
-const priceTable = document.getElementById('priceTable');
-const priceTbody = priceTable.querySelector('tbody');
-
-// تفعيل الفاتورة وتمكين البحث عند الضغط على زر الإنشاء
-createInvoiceBtn.addEventListener('click', () => {
-  invoiceSection.style.display = 'block';
-  searchInput.disabled = false;
-  searchBtn.disabled = false;
-  clearBtn.disabled = false;
-  priceTable.style.display = 'table';
-  addQtyAndAddButtons(); // إضافة الكمية وزر الإضافة مرة واحدة عند فتح الفاتورة
-});
-
-// تحديث الإجمالي
-function updateTotal() {
-  let sum = 0;
-  Array.from(invoiceTable.rows).forEach(row => {
-    const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
-    const qty = parseInt(row.cells[2].innerText) || 0;
-    row.cells[3].innerText = (price * qty).toLocaleString();
-    sum += price * qty;
-  });
-  totalDiv.innerText = `الإجمالي: ${sum.toLocaleString()}`;
-}
-
-// إضافة صف للفاتورة
-function addToInvoice(name, price, qty) {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${name}</td><td>${price}</td><td>${qty}</td><td>${price*qty}</td><td><button class="removeBtn">حذف</button></td>`;
-  invoiceTable.appendChild(tr);
-  updateTotal();
-
-  tr.querySelector('.removeBtn').addEventListener('click', () => {
-    tr.remove();
-    updateTotal();
-  });
-}
-
-// إضافة أزرار الكمية وزر الإضافة لكل صف
-function addQtyAndAddButtons() {
-  Array.from(priceTbody.rows).forEach(row => {
-    // إضافة عمود الكمية إذا لم يكن موجود
-    if(!row.querySelector('.qty-input')) {
-      const qtyCell = row.insertCell(3);
-      const minusBtn = document.createElement('button');
-      minusBtn.innerText = '-';
-      const qtyInput = document.createElement('input');
-      qtyInput.type = 'text';
-      qtyInput.value = '1';
-      qtyInput.readOnly = true;
-      qtyInput.classList.add('qty-input');
-      const plusBtn = document.createElement('button');
-      plusBtn.innerText = '+';
-      qtyCell.appendChild(minusBtn);
-      qtyCell.appendChild(qtyInput);
-      qtyCell.appendChild(plusBtn);
-
-      minusBtn.addEventListener('click', () => {
-        let val = parseInt(qtyInput.value);
-        if(val>1) qtyInput.value = val-1;
-      });
-      plusBtn.addEventListener('click', () => {
-        let val = parseInt(qtyInput.value);
-        qtyInput.value = val+1;
-      });
-    }
-
-    // إضافة زر الإضافة إذا لم يكن موجود
-    if(!row.querySelector('.addBtn')) {
-      const addCell = row.insertCell(4);
-      const btn = document.createElement('button');
-      btn.innerText = 'إضافة للفاتورة';
-      btn.classList.add('addBtn');
-      addCell.appendChild(btn);
-      btn.addEventListener('click', () => addToInvoice(
-        row.cells[1].innerText,
-        parseFloat(row.cells[2].innerText),
-        parseInt(row.cells[3].querySelector('input').value)
-      ));
-    }
-  });
-}
-
-// بحث ذكي
-function smartSearch() {
-  const input = searchInput.value.trim().toLowerCase();
-  let matches = 0;
-  Array.from(priceTbody.rows).forEach(row => {
-    let rowText = row.cells[0].innerText + ' ' + row.cells[1].innerText + ' ' + row.cells[2].innerText;
-    if(input === '' || input.split(/\s+/).every(word => rowText.toLowerCase().includes(word))) {
-      row.classList.remove('hidden');
-      matches++;
-    } else {
-      row.classList.add('hidden');
-    }
-  });
-  resultCount.innerText = matches>0?`عدد النتائج: ${matches}`:'لا توجد نتائج مطابقة 😕';
-}
-
-// أحداث البحث
-searchInput.addEventListener('input', smartSearch);
-searchBtn.addEventListener('click', smartSearch);
-clearBtn.addEventListener('click', () => { searchInput.value=''; smartSearch(); });
-</script>
-
-</body>
-</html>
