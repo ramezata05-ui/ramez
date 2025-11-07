@@ -1,70 +1,68 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>كشف أسعار لمعرض أبو رامز</title>
-<style>
-body { font-family: Arial; margin: 40px; padding: 20px; }
-h1 { text-align:center; }
-.search-box { text-align:center; margin-bottom:20px; }
-input[type="text"] { padding:8px; font-size:16px; margin:5px; }
-button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; }
-mark { background-color: yellow; }
-table { border-collapse: collapse; width:100%; margin-top:20px; }
-th, td { border:1px solid #333; padding:8px; text-align:right; }
-th { background-color:#f2f2f2; }
-.hidden { display:none; }
-#resultCount { text-align:center; margin-top:10px; font-weight:bold; color:#444; }
-#invoiceTable th, #invoiceTable td { text-align:right; }
-#total { font-weight:bold; margin-top:10px; text-align:right; }
-.qty-input { width:40px; text-align:center; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>كشف أسعار لمعرض أبو رامز</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    .search-box { margin-bottom: 20px; text-align: center; }
+    input[type="text"] { padding: 8px; font-size: 16px; margin: 5px; }
+    button { padding: 8px 12px; font-size: 16px; cursor: pointer; margin: 5px; }
+    mark { background-color: yellow; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: right; }
+    th { background-color: #f2f2f2; }
+    .hidden { display: none; }
+    #resultCount {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
 
-<h1>كشف أسعار لمعرض أبو رامز</h1>
+  <h1>كشف أسعار لمعرض أبو رامز</h1>
 
+ <!-- زر الانتقال للرابط الخارجي -->
+<button onclick="window.location.href='https://ramezatatra9.github.io/ramez/invoice.html'">
+  انتقل لإنشاء الفاتورة
+</button>
 
-
-
-
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="اكبس هون وسوي بحث 🔍">
-<div>
-  <button id="searchBtn">بحث</button>
-<button id="clearBtn">مسح ✖️</button>
+  <div class="search-box">
+   <p> <input type="text" id="searchInput" placeholder="   اكبس هون وسوي بحث 🔍 ">
+   </p> <button id="searchBtn">بحث</button>
+   <button id="clearBtn">مسح ✖️</button>
+  <p>  <div style="
+  background-color: #1D70B8; /* اللون الأصفر */
+  color: white;               /* لون النص أسود */
+  padding: 5px 15px;         /* مساحة صغيرة حول النص */
+  border-radius: 5px;        /* انحناء الزوايا */
+  display: inline-block;     /* يجعل المستطيل يضبط حجمه حسب النص */
+  font-family: Arial, sans-serif;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2); /* ظل خفيف */
+">
+  <h4 style="margin: 0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
+</div></p>
   </div>
-  <div style="text-align:center; margin-bottom:20px;">
-  <button id="createInvoiceBtn">إنشاء فاتورة جديدة 💰</button>
-</div>
-  
-  <div id="invoiceSection" style="display:none;">
-<h2 style="text-align:center;">الفاتورة</h2>
-<table id="invoiceTable">
-<thead>
-<tr><th>الصنف</th><th>السعر</th><th>الكمية</th><th>الإجمالي</th><th>إجراء</th></tr>
-</thead>
-<tbody></tbody>
-</table>
-<div id="total">الإجمالي: 0</div>
-</div>
-  
-<p>
-<div style="background-color:#1D70B8;color:white;padding:5px 15px;border-radius:5px;display:inline-block;box-shadow:1px 1px 4px rgba(0,0,0,0.2);">
-<h4 style="margin:0;">تصميم وتنفيذ المبرمج رامز 💯</h4>
-</div>
-</p>
-</div>
 
-<div id="resultCount"></div>
+  <div id="resultCount"></div>
 
-<div id="content">
-<table id="priceTable">
-<thead>
-<tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th><th>الكمية</th><th>إجراء</th></tr>
-</thead>
-<tbody>
+  <div id="content">
+    <table id="priceTable">
+      <thead>
+        <tr><th>رقم الصنف</th><th>الصنف</th><th>السعر</th></tr>
+      </thead>
+      <tbody>
+      
+  
     <tr>
         <td>I00000001</td>
         <td>غسالة ال جي 10.5 كيلو سلفر LG V3</td>
@@ -5535,125 +5533,75 @@ th { background-color:#f2f2f2; }
         <td>صوبة كريست برج 2 عين 5302</td>
         <td>135</td>
     </tr>
-</tbody>
-</table>
-</div>
+  </tbody>
+    </table>
+  </div>
 
-<script>
-const invoiceSection = document.getElementById('invoiceSection');
-const invoiceTable = document.getElementById('invoiceTable').querySelector('tbody');
-const totalDiv = document.getElementById('total');
-const createInvoiceBtn = document.getElementById('createInvoiceBtn');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const clearBtn = document.getElementById('clearBtn');
-const resultCount = document.getElementById('resultCount');
-const priceTable = document.getElementById('priceTable').querySelector('tbody');
-
-// تفعيل ظهور الفاتورة
-createInvoiceBtn.addEventListener('click', () => { invoiceSection.style.display='block'; });
-
-// تحديث الإجمالي
-function updateTotal() {
-  let sum = 0;
-  Array.from(invoiceTable.rows).forEach(row => {
-    const price = parseFloat(row.cells[1].innerText.replace(/,/g,'')) || 0;
-    const qty = parseInt(row.cells[2].innerText) || 0;
-    row.cells[3].innerText = (price * qty).toLocaleString();
-    sum += price * qty;
-  });
-  totalDiv.innerText = `الإجمالي: ${sum.toLocaleString()}`;
-}
-
-// إضافة صف للفاتورة
-function addToInvoice(name, price, qty) {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${name}</td><td>${price}</td><td>${qty}</td><td>${price*qty}</td><td><button class="removeBtn">حذف</button></td>`;
-  invoiceTable.appendChild(tr);
-  updateTotal();
-
-  tr.querySelector('.removeBtn').addEventListener('click', () => {
-    tr.remove();
-    updateTotal();
-  });
-}
-
-// بحث ذكي مع أزرار الكمية
-function smartSearch() {
-  const input = searchInput.value.trim().toLowerCase();
-  let matches = 0;
-  Array.from(priceTable.rows).forEach(row => {
-    row.cells[0].innerText = row.cells[0].dataset.original || row.cells[0].innerText;
-    row.cells[1].innerText = row.cells[1].dataset.original || row.cells[1].innerText;
-    row.cells[2].innerText = row.cells[2].dataset.original || row.cells[2].innerText;
-
-    let rowText = row.cells[0].innerText + ' ' + row.cells[1].innerText + ' ' + row.cells[2].innerText;
-    if(input === '' || input.split(/\s+/).every(word => rowText.toLowerCase().includes(word))) {
-      row.classList.remove('hidden');
-      matches++;
-
-      // إضافة عمود الكمية إذا لم يكن موجود
-      if(!row.querySelector('.qty-input')) {
-        const qtyCell = row.insertCell(3);
-        const minusBtn = document.createElement('button');
-        minusBtn.innerText = '-';
-        const qtyInput = document.createElement('input');
-        qtyInput.type = 'text';
-        qtyInput.value = '1';
-        qtyInput.readOnly = true;
-        qtyInput.classList.add('qty-input');
-        const plusBtn = document.createElement('button');
-        plusBtn.innerText = '+';
-        qtyCell.appendChild(minusBtn);
-        qtyCell.appendChild(qtyInput);
-        qtyCell.appendChild(plusBtn);
-
-        minusBtn.addEventListener('click', () => {
-          let val = parseInt(qtyInput.value);
-          if(val>1) qtyInput.value = val-1;
-        });
-        plusBtn.addEventListener('click', () => {
-          let val = parseInt(qtyInput.value);
-          qtyInput.value = val+1;
-        });
-      }
-
-      // إضافة زر الإضافة إذا لم يكن موجود
-      if(!row.querySelector('.addBtn')) {
-        const addCell = row.insertCell(4);
-        const btn = document.createElement('button');
-        btn.innerText = 'إضافة للفاتورة';
-        btn.classList.add('addBtn');
-        addCell.appendChild(btn);
-        btn.addEventListener('click', () => addToInvoice(
-          row.cells[1].innerText,
-          parseFloat(row.cells[2].innerText),
-          parseInt(row.cells[3].querySelector('input').value)
-        ));
-      }
-    } else {
-      row.classList.add('hidden');
+  <script>
+    // 🔹 إزالة أي تظليل
+    function clearHighlights() {
+      document.querySelectorAll('#priceTable td').forEach(td => {
+        td.innerHTML = td.textContent;
+      });
     }
-  });
-  resultCount.innerText = matches>0?`عدد النتائج: ${matches}`:'لا توجد نتائج مطابقة 😕';
-}
 
-// حفظ النص الأصلي لكل خلية
-Array.from(priceTable.rows).forEach(row=>{
-  Array.from(row.cells).forEach(cell=>cell.dataset.original = cell.innerText);
-});
+    // 🔹 بحث ذكي مرن
+    function smartSearch() {
+      const input = document.getElementById('searchInput').value.trim().toLowerCase();
+      const rows = Array.from(document.querySelectorAll('#priceTable tbody tr'));
+      let matches = 0;
 
-// أحداث البحث
-searchInput.addEventListener('input', smartSearch);
-searchBtn.addEventListener('click', smartSearch);
-clearBtn.addEventListener('click', () => { searchInput.value=''; smartSearch(); });
+      clearHighlights();
 
-// تفعيل البحث عند التحميل لإضافة الأزرار
-smartSearch();
-</script>
+      if (input === '') {
+        rows.forEach(row => row.classList.remove('hidden'));
+        document.getElementById('resultCount').textContent = '';
+        return;
+      }
+
+      const words = input.split(/\s+/);
+
+      rows.forEach(row => {
+        const rowText = Array.from(row.querySelectorAll('td'))
+                             .map(td => td.textContent.toLowerCase())
+                             .join(' ');
+        const isMatch = words.every(word => rowText.includes(word));
+
+        if (isMatch) {
+          row.classList.remove('hidden');
+          // تظليل كل كلمة في أي خلية
+          row.querySelectorAll('td').forEach(td => {
+            words.forEach(word => {
+              const regex = new RegExp(`(${word})`, 'gi');
+              td.innerHTML = td.innerHTML.replace(regex, '<mark>$1</mark>');
+            });
+          });
+          matches++;
+        } else {
+          row.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('resultCount').textContent = matches > 0
+        ? `عدد النتائج: ${matches}`
+        : 'لا توجد نتائج مطابقة 😕';
+    }
+
+    // 🔹 تفعيل البحث أثناء الكتابة والزر
+    document.getElementById('searchInput').addEventListener('input', smartSearch);
+    document.getElementById('searchBtn').addEventListener('click', smartSearch);
+
+    // 🔹 زر مسح البحث
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      smartSearch();
+    });
+  </script>
 
 </body>
 </html>
+
+
 
 
 
