@@ -8,6 +8,7 @@
 body { font-family: Arial; margin:20px; padding:0; }
 h1,h2,h3 { margin:0; }
 button { cursor:pointer; font-size:16px; padding:6px 12px; margin:5px; }
+.addBtn { background-color: #28a745; color:white; border:none; border-radius:4px; }
 #invoiceContainer { display:none; margin-top:20px; }
 #invoiceSummaryContainer { display:none; margin-top:20px; }
 #totalBox { font-weight:bold; text-align:center; color:white; background:#850000; padding:10px; margin:20px auto; width:300px; border-radius:5px; display:none;}
@@ -142,7 +143,9 @@ function setupInvoiceFunctions(){
     if(!row.querySelector('.addBtn')){
       const addCell = row.insertCell(-1);
       const addBtn = document.createElement('button');
-      addBtn.innerText='إضافة للفاتورة'; addBtn.classList.add('addBtn'); addCell.appendChild(addBtn);
+      addBtn.innerText='إضافة للفاتورة'; 
+      addBtn.classList.add('addBtn'); // اللون الأخضر
+      addCell.appendChild(addBtn);
       addBtn.addEventListener('click', ()=>{
         const name = row.cells[1].innerText;
         const price = parseFloat(row.cells[2].innerText.replace(/,/g,''))||0;
@@ -247,7 +250,7 @@ document.getElementById('saveInvoiceBtn').addEventListener('click', () => {
       body { font-family: Arial; padding:20px; direction: rtl; }
       table { border-collapse: collapse; width:100%; }
       th, td { border:1px solid #333; padding:8px; text-align:center; }
-      th { background-color:#e9f2fa; }
+      th { background-color:#f2f2f2; }
       h2 { text-align:center; color:#1D70B8; }
       h3 { text-align:center; color:#850000; margin-top:20px; }
     </style>
