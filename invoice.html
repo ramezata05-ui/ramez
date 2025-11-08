@@ -5,13 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>إنشاء فاتورة</title>
 <style>
-body { font-family: Arial; margin:0; padding:0; background-color:#f9f9f9; }
-h1,h2 { margin:0; }
-button { padding:8px 12px; font-size:16px; cursor:pointer; margin:5px; min-width:180px; }
-#invoiceContainer { display:none; margin-top:20px; }
+body {
+  font-family: "Cairo", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+h1, h2 { margin: 0; }
+
+button {
+  padding: 10px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 6px;
+  border: none;
+  border-radius: 6px;
+  background-color: #1D70B8;
+  color: white;
+  transition: 0.2s;
+}
+button:hover { background-color: #155f96; }
+
+#invoiceContainer { display:none; margin-top:30px; }
 #invoiceSummaryContainer { display:none; margin-top:20px; }
-.qty-input { width:50px; text-align:center; font-size:16px; }
-button { min-width:160px; }
+
+.qty-input {
+  width: 45px;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 6px;
+}
+
 #totalBox {
   display:none;
   background-color:#850000;
@@ -24,12 +50,50 @@ button { min-width:160px; }
   width:60%;
   border-radius:10px;
 }
-input[type="text"] { padding:8px; font-size:16px; width:60%; margin:10px auto; display:block; }
+
+input[type="text"] {
+  padding:8px;
+  font-size:16px;
+  width:60%;
+  margin:10px auto;
+  display:block;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+table {
+  border-collapse: collapse;
+  width: 90%;
+  margin: 20px auto;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+th {
+  background-color: #e9f2fa;
+  font-weight: bold;
+}
+td button {
+  background-color: #28a745;
+}
+td button:hover {
+  background-color: #1e7e34;
+}
+.removeBtn {
+  background-color: #c82333 !important;
+}
+.removeBtn:hover {
+  background-color: #a71d2a !important;
+}
 </style>
 </head>
 <body>
 
-<!-- عنوان الصفحة -->
+<!-- العنوان -->
 <div style="background-color:#1D70B8; color:white; text-align:center; padding:15px 0; margin-bottom:20px;">
   <h1>إنشاء فاتورة 💰</h1>
 </div>
@@ -43,15 +107,15 @@ input[type="text"] { padding:8px; font-size:16px; width:60%; margin:10px auto; d
 <!-- معلومات الفاتورة -->
 <div id="invoiceInfo" style="display:none; text-align:center;">
   <input type="text" id="clientName" placeholder="أدخل اسم العميل">
-  <div id="invoiceDateTime"></div>
+  <div id="invoiceDateTime" style="font-size:17px; color:#555;"></div>
 </div>
 
-<!-- جدول الفاتورة (الأعلى الآن) -->
+<!-- جدول الفاتورة -->
 <div id="invoiceSummaryContainer">
   <h2 style="text-align:center;">المنتجات المضافة للفاتورة</h2>
-  <table id="invoiceSummaryTable" style="width:90%; margin:auto; border-collapse:collapse;">
+  <table id="invoiceSummaryTable">
     <thead>
-      <tr style="background:#f2f2f2;">
+      <tr>
         <th>الصنف</th>
         <th>السعر</th>
         <th>الكمية</th>
@@ -67,10 +131,10 @@ input[type="text"] { padding:8px; font-size:16px; width:60%; margin:10px auto; d
 
 <!-- زر الحفظ -->
 <div id="saveArea" style="display:none; text-align:center;">
-  <button id="saveInvoiceBtn">💾 حفظ الفاتورة</button>
+  <button id="saveInvoiceBtn" style="background-color:#850000;">💾 حفظ الفاتورة</button>
 </div>
 
-<!-- جدول المنتجات (أسفل) -->
+<!-- جدول المنتجات -->
 <div id="invoiceContainer"></div>
 
 <script>
@@ -87,12 +151,12 @@ const saveInvoiceBtn = document.getElementById('saveInvoiceBtn');
 const dateTimeDiv = document.getElementById('invoiceDateTime');
 let invoiceTable, precomputedText = [];
 
-// زر الانتقال لصفحة المنتجات
+// زر الانتقال للمنتجات
 goProductsBtn.addEventListener('click', () => {
   window.location.href = 'https://ramezatatra9.github.io/ramez/product.html';
 });
 
-// دالة تأخير البحث
+// تأخير البحث
 function debounce(func, delay) {
   let timeout;
   return function(...args){
@@ -101,10 +165,10 @@ function debounce(func, delay) {
   }
 }
 
-// إنشاء الفاتورة وجلب جدول المنتجات
+// إنشاء الفاتورة
 createInvoiceBtn.addEventListener('click', async () => {
   invoiceInfo.style.display = 'block';
-  dateTimeDiv.innerText = "التاريخ والوقت: " + new Date().toLocaleString();
+  dateTimeDiv.innerText = "🕒 " + new Date().toLocaleString();
 
   if(invoiceContainer.innerHTML.trim() === '') {
     try {
@@ -125,7 +189,7 @@ createInvoiceBtn.addEventListener('click', async () => {
 
       setupInvoiceFunctions();
     } catch(err) {
-      invoiceContainer.innerHTML = `<p style="color:red; text-align:center;">حدث خطأ أثناء جلب الصفحة: ${err.message}</p>`;
+      invoiceContainer.innerHTML = `<p style="color:red; text-align:center;">خطأ: ${err.message}</p>`;
     }
   } else {
     invoiceContainer.style.display = 'block';
@@ -143,15 +207,17 @@ function setupInvoiceFunctions(){
   rows.forEach(row=>{
     if(!row.querySelector('.qty-input')){
       const qtyCell = row.insertCell(-1);
-      const minusBtn = document.createElement('button'); minusBtn.innerText='-';
-      const qtyInput = document.createElement('input'); qtyInput.type='text'; qtyInput.value='1';
-      qtyInput.readOnly=true; qtyInput.classList.add('qty-input');
-      const plusBtn = document.createElement('button'); plusBtn.innerText='+';
-
       const box = document.createElement('div');
       box.style.display='flex';
       box.style.alignItems='center';
       box.style.justifyContent='center';
+
+      const minusBtn = document.createElement('button'); minusBtn.innerText='-';
+      const qtyInput = document.createElement('input');
+      qtyInput.type='text'; qtyInput.value='1';
+      qtyInput.readOnly=true; qtyInput.classList.add('qty-input');
+      const plusBtn = document.createElement('button'); plusBtn.innerText='+';
+
       box.appendChild(minusBtn);
       box.appendChild(qtyInput);
       box.appendChild(plusBtn);
@@ -164,8 +230,10 @@ function setupInvoiceFunctions(){
     if(!row.querySelector('.addBtn')){
       const addCell = row.insertCell(-1);
       const addBtn = document.createElement('button');
-      addBtn.innerText='إضافة للفاتورة'; addBtn.classList.add('addBtn');
+      addBtn.innerText='➕ إضافة للفاتورة';
+      addBtn.classList.add('addBtn');
       addCell.appendChild(addBtn);
+
       addBtn.addEventListener('click', ()=>{
         const name = row.cells[1].innerText;
         const price = parseFloat(row.cells[2].innerText.replace(/,/g,''))||0;
@@ -175,6 +243,7 @@ function setupInvoiceFunctions(){
     }
   });
 
+  // البحث
   const searchInput = document.createElement('input');
   searchInput.type='text'; searchInput.placeholder='ابحث عن الصنف 🔍';
   searchInput.style.display='block';
@@ -217,7 +286,7 @@ function updateTotal(){
   totalBox.innerText = `الإجمالي: ${total.toLocaleString()} 💰`;
 }
 
-// حفظ الفاتورة إلى ملف
+// حفظ الفاتورة
 saveInvoiceBtn.addEventListener('click', ()=>{
   const client = clientNameInput.value || "بدون اسم";
   const date = new Date().toLocaleString();
