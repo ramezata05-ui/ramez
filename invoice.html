@@ -151,6 +151,14 @@ const saveInvoiceBtn = document.getElementById('saveInvoiceBtn');
 const dateTimeDiv = document.getElementById('invoiceDateTime');
 let invoiceTable, precomputedText = [];
 
+// دالة تحويل التاريخ إلى DD/MM/YYYY
+function formatDate(date){
+  const d = date.getDate().toString().padStart(2,'0');
+  const m = (date.getMonth()+1).toString().padStart(2,'0');
+  const y = date.getFullYear();
+  return `${d}/${m}/${y}`;
+}
+
 // زر الانتقال للمنتجات
 goProductsBtn.addEventListener('click', () => {
   window.location.href = 'https://ramezatatra9.github.io/ramez/product.html';
@@ -168,7 +176,7 @@ function debounce(func, delay) {
 // إنشاء الفاتورة
 createInvoiceBtn.addEventListener('click', async () => {
   invoiceInfo.style.display = 'block';
-  dateTimeDiv.innerText = "🕒 " + new Date().toLocaleString();
+  dateTimeDiv.innerText = "🕒 " + formatDate(new Date());
 
   if(invoiceContainer.innerHTML.trim() === '') {
     try {
@@ -283,29 +291,45 @@ function updateTotal(){
   Array.from(invoiceSummaryTable.rows).forEach(row=>{
     total += parseFloat(row.cells[3].innerText.replace(/,/g,'')) || 0;
   });
-  totalBox.innerText = `الإجمالي: ${total.toLocaleString()} 💰`;
+  totalBox.innerHTML = `الإجمالي: ${total.toLocaleString()} 💰`;
 }
 
 // حفظ الفاتورة بصيغة HTML
 saveInvoiceBtn.addEventListener('click', ()=>{
   const client = clientNameInput.value || "بدون اسم";
-  const date = new Date().toLocaleString();
+  const date = formatDate(new Date());
 
-  let tableHTML = `
-  <table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse; width:100%; text-align:center;">
-    <thead style="background:#e9f2fa;">
-      <tr>
-        <th>الصنف</th>
-        <th>السعر</th>
-        <th>الكمية</th>
-        <th>الإجمالي</th>
-      </tr>
-    </thead>
-    <tbody>
-  `;
+  let htmlContent = `
+  <!DOCTYPE html>
+  <html lang="ar" dir="rtl">
+  <head>
+  <meta charset="UTF-8">
+  <title>فاتورة</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color:#f9f9f9; }
+    h2 { text-align:center; color:#1D70B8; }
+    table { border-collapse: collapse; width: 100%; margin: 20px auto; }
+    th, td { border:1px solid #333; padding:8px; text-align:center; }
+    th { background-color:#e9f2fa; }
+  </style>
+  </head>
+  <body>
+    <h2>فاتورة</h2>
+    <p>العميل: ${client}</p>
+    <p>التاريخ: ${date}</p>
+    <table>
+      <thead>
+        <tr>
+          <th>الصنف</th>
+          <th>السعر</th>
+          <th>الكمية</th>
+          <th>الإجمالي</th>
+        </tr>
+      </thead>
+      <tbody>`;
 
   Array.from(invoiceSummaryTable.rows).forEach(row=>{
-    tableHTML += `<tr>
+    htmlContent += `<tr>
       <td>${row.cells[0].innerText}</td>
       <td>${row.cells[1].innerText}</td>
       <td>${row.cells[2].innerText}</td>
@@ -313,35 +337,11 @@ saveInvoiceBtn.addEventListener('click', ()=>{
     </tr>`;
   });
 
-  tableHTML += '</tbody></table>';
+  htmlContent += `</tbody></table>
+    <h3 style="text-align:center;">${totalBox.innerText}</h3>
+  </body></html>`;
 
-  const invoiceHTML = `
-  <!DOCTYPE html>
-  <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8">
-    <title>فاتورة العميل ${client}</title>
-    <style>
-      body { font-family: "Cairo", Arial, sans-serif; padding:20px; background:#f9f9f9; }
-      h2 { text-align:center; color:#1D70B8; }
-      p { font-size:16px; text-align:center; }
-      table { border-collapse: collapse; width:100%; margin-top:20px; background:white; }
-      th, td { border:1px solid #ddd; padding:10px; text-align:center; }
-      th { background-color:#e9f2fa; font-weight:bold; }
-      #totalBox { background-color:#850000; color:white; font-weight:bold; font-size:18px; text-align:center; padding:10px; margin:20px auto; width:50%; border-radius:6px; }
-    </style>
-  </head>
-  <body>
-    <h2>فاتورة بيع</h2>
-    <p>اسم العميل: ${client}</p>
-    <p>التاريخ والوقت: ${date}</p>
-    ${tableHTML}
-    <div id="totalBox">${totalBox.innerText}</div>
-  </body>
-  </html>
-  `;
-
-  const blob = new Blob([invoiceHTML], {type: "text/html"});
+  const blob = new Blob([htmlContent], {type: "text/html;charset=utf-8"});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `فاتورة_${client}_${Date.now()}.html`;
