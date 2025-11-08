@@ -286,21 +286,65 @@ function updateTotal(){
   totalBox.innerText = `الإجمالي: ${total.toLocaleString()} 💰`;
 }
 
-// حفظ الفاتورة
+// حفظ الفاتورة بصيغة HTML
 saveInvoiceBtn.addEventListener('click', ()=>{
   const client = clientNameInput.value || "بدون اسم";
   const date = new Date().toLocaleString();
-  let content = `فاتورة\nالعميل: ${client}\nالتاريخ: ${date}\n\n`;
-  content += "الصنف\tالسعر\tالكمية\tالإجمالي\n";
-  Array.from(invoiceSummaryTable.rows).forEach(row=>{
-    content += `${row.cells[0].innerText}\t${row.cells[1].innerText}\t${row.cells[2].innerText}\t${row.cells[3].innerText}\n`;
-  });
-  content += `\n${totalBox.innerText}`;
 
-  const blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+  let tableHTML = `
+  <table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse; width:100%; text-align:center;">
+    <thead style="background:#e9f2fa;">
+      <tr>
+        <th>الصنف</th>
+        <th>السعر</th>
+        <th>الكمية</th>
+        <th>الإجمالي</th>
+      </tr>
+    </thead>
+    <tbody>
+  `;
+
+  Array.from(invoiceSummaryTable.rows).forEach(row=>{
+    tableHTML += `<tr>
+      <td>${row.cells[0].innerText}</td>
+      <td>${row.cells[1].innerText}</td>
+      <td>${row.cells[2].innerText}</td>
+      <td>${row.cells[3].innerText}</td>
+    </tr>`;
+  });
+
+  tableHTML += '</tbody></table>';
+
+  const invoiceHTML = `
+  <!DOCTYPE html>
+  <html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8">
+    <title>فاتورة العميل ${client}</title>
+    <style>
+      body { font-family: "Cairo", Arial, sans-serif; padding:20px; background:#f9f9f9; }
+      h2 { text-align:center; color:#1D70B8; }
+      p { font-size:16px; text-align:center; }
+      table { border-collapse: collapse; width:100%; margin-top:20px; background:white; }
+      th, td { border:1px solid #ddd; padding:10px; text-align:center; }
+      th { background-color:#e9f2fa; font-weight:bold; }
+      #totalBox { background-color:#850000; color:white; font-weight:bold; font-size:18px; text-align:center; padding:10px; margin:20px auto; width:50%; border-radius:6px; }
+    </style>
+  </head>
+  <body>
+    <h2>فاتورة بيع</h2>
+    <p>اسم العميل: ${client}</p>
+    <p>التاريخ والوقت: ${date}</p>
+    ${tableHTML}
+    <div id="totalBox">${totalBox.innerText}</div>
+  </body>
+  </html>
+  `;
+
+  const blob = new Blob([invoiceHTML], {type: "text/html"});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `فاتورة_${client}_${Date.now()}.txt`;
+  a.download = `فاتورة_${client}_${Date.now()}.html`;
   a.click();
 });
 </script>
