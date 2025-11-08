@@ -129,9 +129,34 @@ th {
   font-size: 20px;
   padding: 10px;
   width: 300px;
-  margin: 25px auto;
+  margin: 25px auto 10px auto;
   border-radius: 8px;
   display: none;
+}
+
+/* حقل العميل */
+.customer-box {
+  display: none;
+  text-align: center;
+  margin: 20px auto;
+}
+
+.customer-box input {
+  padding: 8px;
+  width: 60%;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* زر PDF */
+.pdf-btn {
+  display: none;
+  background-color: #008000;
+  padding: 10px 20px;
+  border-radius: 6px;
+  margin: 10px auto;
+  display: block;
 }
 </style>
 </head>
@@ -175,18 +200,30 @@ th {
 
 <div class="total-box" id="totalBox">الإجمالي: 0</div>
 
+<!-- حقل اسم العميل -->
+<div class="customer-box" id="customerBox">
+  <input type="text" id="customerName" placeholder="اسم العميل">
+</div>
+
+<button id="savePdfBtn" class="pdf-btn">💾 حفظ الفاتورة كملف PDF</button>
+
+<!-- مكتبة html2pdf -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script>
 document.getElementById("newInvoiceBtn").addEventListener("click", async () => {
   document.getElementById("searchBox").style.display = "block";
   document.getElementById("productTable").style.display = "table";
   document.getElementById("invoiceTable").style.display = "table";
   document.getElementById("totalBox").style.display = "block";
+  document.getElementById("customerBox").style.display = "block";
+  document.getElementById("savePdfBtn").style.display = "block";
 
   const response = await fetch('https://ramezatatra9.github.io/ramez/product.html');
   const text = await response.text();
   const parser = new DOMParser();
   const doc = parser.parseFromString(text, 'text/html');
-  const rows = doc.querySelectorAll('#productTable tbody tr');
+  const rows = doc.querySelectorAll('#priceTable tbody tr, #productTable tbody tr');
   
   const tableBody = document.querySelector('#productTable tbody');
   tableBody.innerHTML = '';
@@ -194,8 +231,8 @@ document.getElementById("newInvoiceBtn").addEventListener("click", async () => {
   rows.forEach(row => {
     const cells = row.querySelectorAll('td');
     if (cells.length >= 2) {
-      const name = cells[0].textContent.trim();
-      const price = cells[1].textContent.trim();
+      const name = cells[1]?.textContent?.trim() || cells[0].textContent.trim();
+      const price = cells[2]?.textContent?.trim() || cells[1].textContent.trim();
       const newRow = document.createElement('tr');
       newRow.innerHTML = `
         <td>${name}</td>
@@ -226,7 +263,7 @@ function setupFunctions() {
     btn.addEventListener("click", e => {
       const row = e.target.closest("tr");
       const name = row.cells[0].textContent;
-      const price = parseFloat(row.cells[1].textContent);
+      const price = parseFloat(row.cells[1].textContent.replace(/,/g, ""));
       addToInvoice(name, price);
     });
   });
@@ -299,6 +336,25 @@ function updateTotal() {
   totals.forEach(cell => sum += parseFloat(cell.textContent) || 0);
   document.getElementById("totalBox").textContent = `الإجمالي: ${sum.toFixed(2)}`;
 }
+
+// حفظ PDF مع اسم العميل والتاريخ والوقت
+document.getElementById("savePdfBtn").addEventListener("click", () => {
+  const customerName = document.getElementById("customerName").value || "غير محدد";
+  const now = new Date();
+  const dateTime = now.toLocaleString('ar-EG');
+  const element = document.createElement("div");
+
+  element.innerHTML = `
+    <h2 style="text-align:center;">فاتورة المبيعات</h2>
+    <p style="text-align:center;">العميل: <strong>${customerName}</strong></p>
+    <p style="text-align:center;">التاريخ والوقت: <strong>${dateTime}</strong></p>
+    ${document.querySelector("#invoiceTable").outerHTML}
+    <h3 style="text-align:center; color:#850000;">${document.getElementById("totalBox").textContent}</h3>
+  `;
+
+  const fileName = `فاتورة_${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}.pdf`;
+  html2pdf().set({ filename: fileName }).from(element).save();
+});
 </script>
 </body>
 </html>
